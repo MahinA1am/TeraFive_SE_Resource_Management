@@ -1,9 +1,0 @@
-Group Name: TeraFive
-Group Members:
-1.Md.Rifatul Islam - 21225103046
-2.Md.Ali Akbor - 21225103047
-3.Md.Famidul Islam Pranto - 21225103054
-4.Janntul Ferdush - 21225103243
-5.Mahin Alam(L) - 21225103245
-
-Project Title:Ultimate Resource Management System
