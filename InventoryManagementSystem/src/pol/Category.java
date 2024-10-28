@@ -14,6 +14,9 @@ import java.awt.Color;
 import javax.swing.SwingConstants;
 import javax.swing.JTextField;
 import javax.swing.JButton;
+import javax.swing.ImageIcon;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
 
 public class Category extends JFrame {
 
@@ -26,6 +29,7 @@ public class Category extends JFrame {
 	private JButton btnNewButton_1;
 	private JButton btnReset;
 	private JButton btnClose;
+	private JLabel lblNewLabel_2;
 
 	/**
 	 * Launch the application.
@@ -50,6 +54,7 @@ public class Category extends JFrame {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 873, 579);
 		contentPane = new JPanel();
+		setLocationRelativeTo(null);
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 
 		setContentPane(contentPane);
@@ -105,8 +110,20 @@ public class Category extends JFrame {
 		contentPane.add(btnReset);
 		
 		btnClose = new JButton("Close");
+		btnClose.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				   HomePage homeFrame = new HomePage();
+	                homeFrame.setVisible(true);
+	                dispose();
+			}
+		});
 		btnClose.setFont(new Font("Tahoma", Font.BOLD, 12));
 		btnClose.setBounds(727, 256, 74, 23);
 		contentPane.add(btnClose);
+		
+		lblNewLabel_2 = new JLabel("");
+		lblNewLabel_2.setIcon(new ImageIcon(Category.class.getResource("/Images/4813762.jpg")));
+		lblNewLabel_2.setBounds(0, 0, 3000, 2000);
+		contentPane.add(lblNewLabel_2);
 	}
 }

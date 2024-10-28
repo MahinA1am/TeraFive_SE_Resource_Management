@@ -17,6 +17,8 @@ import javax.swing.JTextField;
 import javax.swing.JComboBox;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
 
 public class ManageUser extends JFrame {
 
@@ -52,7 +54,7 @@ public class ManageUser extends JFrame {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 874, 584);
 		contentPane = new JPanel();
-		setResizable(false);
+		
 		 setLocationRelativeTo(null);
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 
@@ -167,8 +169,20 @@ public class ManageUser extends JFrame {
 		contentPane.add(btnReset);
 		
 		JButton btnClose = new JButton("Close");
+		btnClose.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				   HomePage homeFrame = new HomePage();
+	                homeFrame.setVisible(true);
+	                dispose();
+			}
+		});
 		btnClose.setFont(new Font("Tahoma", Font.BOLD, 12));
 		btnClose.setBounds(754, 471, 74, 23);
 		contentPane.add(btnClose);
+		
+		JLabel lblNewLabel = new JLabel("");
+		lblNewLabel.setIcon(new ImageIcon(ManageUser.class.getResource("/Images/4813762.jpg")));
+		lblNewLabel.setBounds(0, 0, 3000, 2000);
+		contentPane.add(lblNewLabel);
 	}
 }

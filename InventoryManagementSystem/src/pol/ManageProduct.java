@@ -16,6 +16,9 @@ import javax.swing.JTextField;
 import javax.swing.JComboBox;
 import javax.swing.JButton;
 import javax.swing.DefaultComboBoxModel;
+import javax.swing.ImageIcon;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
 
 public class ManageProduct extends JFrame {
 
@@ -36,6 +39,7 @@ public class ManageProduct extends JFrame {
 	private JButton btnNewButton_1;
 	private JButton btnReset;
 	private JButton btnClose;
+	private JLabel lblNewLabel_4;
 
 	/**
 	 * Launch the application.
@@ -60,6 +64,7 @@ public class ManageProduct extends JFrame {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 876, 579);
 		contentPane = new JPanel();
+		setLocationRelativeTo(null);
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 
 		setContentPane(contentPane);
@@ -162,9 +167,21 @@ public class ManageProduct extends JFrame {
 		contentPane.add(btnReset);
 		
 		btnClose = new JButton("Close");
+		btnClose.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				   HomePage homeFrame = new HomePage();
+	                homeFrame.setVisible(true);
+	                dispose();
+			}
+		});
 		btnClose.setFont(new Font("Tahoma", Font.BOLD, 12));
 		btnClose.setBounds(732, 394, 74, 23);
 		contentPane.add(btnClose);
+		
+		lblNewLabel_4 = new JLabel("");
+		lblNewLabel_4.setIcon(new ImageIcon(ManageProduct.class.getResource("/Images/4813762.jpg")));
+		lblNewLabel_4.setBounds(0, 0, 3000, 2000);
+		contentPane.add(lblNewLabel_4);
 	}
 
 }

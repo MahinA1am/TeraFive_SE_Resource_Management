@@ -82,11 +82,20 @@ public class Login extends JFrame {
 		passText.setColumns(10);
 		
 		JButton loginButton = new JButton("Login");
+		loginButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				   HomePage homeFrame = new HomePage();
+	                homeFrame.setVisible(true);
+	                dispose();
+			}
+		});
+		loginButton.setIcon(new ImageIcon(Login.class.getResource("/Images/login.png")));
 		loginButton.setFont(new Font("Tahoma", Font.BOLD, 13));
 		loginButton.setBounds(523, 275, 262, 23);
 		myFrame.add(loginButton);
 		
 		JButton closeButton = new JButton("Close");
+		closeButton.setIcon(new ImageIcon(Login.class.getResource("/Images/close.png")));
 		closeButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				int a= JOptionPane.showConfirmDialog(null,"Do You Want To Close The Application","Select",JOptionPane.YES_NO_OPTION);

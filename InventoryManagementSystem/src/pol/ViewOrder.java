@@ -13,6 +13,9 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.JButton;
+import javax.swing.ImageIcon;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
 
 public class ViewOrder extends JFrame {
 
@@ -48,6 +51,7 @@ public class ViewOrder extends JFrame {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 900, 646);
 		contentPane = new JPanel();
+		setLocationRelativeTo(null);
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 
 		setContentPane(contentPane);
@@ -57,7 +61,7 @@ public class ViewOrder extends JFrame {
 		lblNewLabel_1.setHorizontalAlignment(SwingConstants.CENTER);
 		lblNewLabel_1.setForeground(Color.BLACK);
 		lblNewLabel_1.setFont(new Font("Tahoma", Font.BOLD, 18));
-		lblNewLabel_1.setBounds(369, 11, 181, 29);
+		lblNewLabel_1.setBounds(370, 11, 181, 29);
 		contentPane.add(lblNewLabel_1);
 		
 		JScrollPane scrollPane = new JScrollPane();
@@ -90,6 +94,13 @@ public class ViewOrder extends JFrame {
 		scrollPane_1.setViewportView(table_1);
 		
 		btnNewButton = new JButton("Close");
+		btnNewButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				   HomePage homeFrame = new HomePage();
+	                homeFrame.setVisible(true);
+	                dispose();
+			}
+		});
 		btnNewButton.setFont(new Font("Tahoma", Font.BOLD, 12));
 		btnNewButton.setBounds(767, 573, 89, 23);
 		contentPane.add(btnNewButton);
@@ -105,6 +116,10 @@ public class ViewOrder extends JFrame {
 		lblNewLabel.setFont(new Font("Tahoma", Font.BOLD, 13));
 		lblNewLabel.setBounds(154, 49, 95, 14);
 		contentPane.add(lblNewLabel);
+		
+		JLabel lblNewLabel_2 = new JLabel("");
+		lblNewLabel_2.setIcon(new ImageIcon(ViewOrder.class.getResource("/Images/4813762.jpg")));
+		lblNewLabel_2.setBounds(0, -11, 3000, 2022);
+		contentPane.add(lblNewLabel_2);
 	}
-
 }
