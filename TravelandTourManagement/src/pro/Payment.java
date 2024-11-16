@@ -6,6 +6,12 @@ import javax.swing.border.EmptyBorder;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.awt.Color;
 
 public class Payment extends JFrame {
@@ -15,6 +21,7 @@ public class Payment extends JFrame {
     private JTextField txtAmount, txtName, txtAddress, txtCardNumber, txtExpiry, txtCVV, txtPromoCode;
     private JLabel lblSummary, lblDiscountedAmount;
     private JCheckBox chkPaidStatus;
+    private String userName,mobNo,country,address;
 
     /**
      * Launch the application.
@@ -23,7 +30,7 @@ public class Payment extends JFrame {
         EventQueue.invokeLater(new Runnable() {
             public void run() {
                 try {
-                    Payment frame = new Payment();
+                    Payment frame = new Payment("",0,0,"","","",0,0.0);
                     frame.setVisible(true);
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -35,7 +42,7 @@ public class Payment extends JFrame {
     /**
      * Create the frame.
      */
-    public Payment() {
+    public Payment(String userEmail,int pId, int hId,String location, String v3, String v4, int persons,double totalAmount) {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setBounds(100, 100, 900, 700);
         contentPane = new JPanel();
@@ -43,6 +50,7 @@ public class Payment extends JFrame {
         contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
         setContentPane(contentPane);
         contentPane.setLayout(null);
+        loadUser(userEmail);
 
         // Payment Method Selection
         JLabel lblPaymentMethod = new JLabel("Select Payment Method:");
@@ -60,7 +68,7 @@ public class Payment extends JFrame {
         lblAmount.setBounds(50, 100, 100, 30);
         contentPane.add(lblAmount);
 
-        txtAmount = new JTextField();
+        txtAmount = new JTextField(""+totalAmount);
         txtAmount.setBounds(250, 100, 200, 30);
         contentPane.add(txtAmount);
 
@@ -94,7 +102,7 @@ public class Payment extends JFrame {
         lblName.setBounds(50, 270, 100, 30);
         contentPane.add(lblName);
 
-        txtName = new JTextField();
+        txtName = new JTextField(userName);
         txtName.setBounds(250, 270, 200, 30);
         contentPane.add(txtName);
 
@@ -162,20 +170,30 @@ public class Payment extends JFrame {
         contentPane.add(lblPayment);
         
         JButton btnClose = new JButton("Close");
+        btnClose.addActionListener(new ActionListener() {
+        	public void actionPerformed(ActionEvent e) {
+        		new HomePage(userEmail).setVisible(true);
+        		dispose();
+        	}
+        });
         btnClose.setFont(new Font("Tahoma", Font.BOLD, 16));
         btnClose.setBounds(774, 611, 100, 30);
         contentPane.add(btnClose);
 
-        // Promo Code Button ActionListener
+      
         btnApplyPromo.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 String promoCode = txtPromoCode.getText();
                 String amountText = txtAmount.getText();
-                if (!promoCode.isEmpty() && !amountText.isEmpty()) {
+                if (!amountText.isEmpty() && promoCode.equals("h") ) {
                     double amount = Double.parseDouble(amountText);
                     double discount = 0.10;  // Example 10% discount
                     double discountedAmount = amount - (amount * discount);
+                    txtAmount.setText(""+discountedAmount);
                     lblDiscountedAmount.setText("Discounted Amount: $" + discountedAmount);
+                }
+                else {
+                	 JOptionPane.showMessageDialog(null, "Invalid Value.", "Error", JOptionPane.ERROR_MESSAGE);
                 }
             }
         });
@@ -184,19 +202,64 @@ public class Payment extends JFrame {
         btnPay.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 String selectedPaymentMethod = (String) paymentMethodDropdown.getSelectedItem();
+                if ("Select Payment Method".equals(selectedPaymentMethod)) {
+                	JOptionPane.showMessageDialog(null, "Select a Payment Method.", "Error", JOptionPane.ERROR_MESSAGE);
+                	return;
+                }
+                if(txtAddress.getText().isEmpty()) {
+                	JOptionPane.showMessageDialog(null, "Invalid Value.", "Error", JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+                
                 if ("Credit Card".equals(selectedPaymentMethod) || "Debit Card".equals(selectedPaymentMethod)) {
                     if (txtCardNumber.getText().isEmpty() || txtExpiry.getText().isEmpty() || txtCVV.getText().isEmpty()) {
-                        lblSummary.setText("Please fill in all card details.");
+                    	JOptionPane.showMessageDialog(null, "Invalid Value.", "Error", JOptionPane.ERROR_MESSAGE);
                         return;
                     }
                 }
                 lblSummary.setText("Payment successful!");
                 chkPaidStatus.setSelected(true);
-                chkPaidStatus.setEnabled(true);
-            }
-        });
+                String sql = "INSERT INTO book_details (User_name, P_ID, H_ID, Total_Price, Mobile_Number, Email, " +
+                        "Country, Address, Total_Person, Location, Arrival_Date, Leaving_Date) " +
+                        "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
-        // Show/Hide Card Details based on Payment Method
+                try (Connection conn = DatabaseConnection.getConnection()) {
+                    
+                	 PreparedStatement preparedStatement = conn.prepareStatement(sql);
+                	 
+                  
+                
+               
+             
+               preparedStatement.setString(1, userName);
+               preparedStatement.setInt(2, pId);
+               preparedStatement.setInt(3, hId);
+               preparedStatement.setDouble(4, totalAmount);
+               preparedStatement.setString(5, mobNo);
+               preparedStatement.setString(6, userEmail);
+               preparedStatement.setString(7, country);
+               preparedStatement.setString(8, address);
+               preparedStatement.setInt(9, persons);
+               preparedStatement.setString(10, location);
+               preparedStatement.setString(11, v3);
+               preparedStatement.setString(12, v4);
+               
+               // Execute the query
+               int rowsInserted = preparedStatement.executeUpdate();
+               if (rowsInserted > 0) {
+                   System.out.println("Data successfully inserted into book_details.");
+               } else {
+                   System.out.println("Failed to insert data into book_details.");
+               }
+           } catch (SQLException ex) {
+              
+               ex.printStackTrace();
+           }
+            }
+                });
+              
+        
+       
         paymentMethodDropdown.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 String selectedMethod = (String) paymentMethodDropdown.getSelectedItem();
@@ -209,5 +272,51 @@ public class Payment extends JFrame {
                 txtCVV.setVisible(showCardDetails);
             }
         });
+        
+        this.addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowOpened(WindowEvent e) {
+                // Ensure location is checked properly
+                if ("None".equals(location)) {
+                    // Pass the actual JFrame component instead of 'this'
+                    JOptionPane.showMessageDialog(e.getWindow(), "First select Package and Hotel for specific Location ",
+                            "Select Package and Hotel", JOptionPane.INFORMATION_MESSAGE);
+                    new HomePage(userEmail).setVisible(true);
+                    dispose();
+                }
+            }
+        });
+
+
+          
+            	
+       
+        
+    }
+    private void loadUser(String userEmail)  {
+    	 try (Connection connection = DatabaseConnection.getConnection()) {
+	            String query = "SELECT name, phone, country, address FROM users WHERE email = ?";
+	            try (PreparedStatement statement = connection.prepareStatement(query)) {
+	                statement.setString(1, userEmail);
+	                ResultSet resultSet = statement.executeQuery();
+
+	                if (resultSet.next()) {
+	                   
+	                    userName=resultSet.getString("name");
+	                    mobNo=resultSet.getString("phone");
+	                
+	                    country=resultSet.getString("country");
+	                    address=resultSet.getString("address");
+	                }
+	            }
+	            catch (SQLException e) {
+	                e.printStackTrace();
+	            }
+    	 
+    }
+    	 catch (SQLException e) {
+             e.printStackTrace();
+         }
     }
 }
+

@@ -6,15 +6,26 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+
 import java.awt.Font;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.awt.Color;
 import javax.swing.SwingConstants;
 import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
 
 public class MyPackage extends JFrame {
 
 	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
+	 private JLabel lblUserName, lblLocation, lblPackage, lblHotel, lblArrival, lblLeaving, lblTotalPerson, lblPrice;
+	 private String hID,pID;
 
 	/**
 	 * Launch the application.
@@ -23,7 +34,7 @@ public class MyPackage extends JFrame {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					MyPackage frame = new MyPackage();
+					MyPackage frame = new MyPackage("fipranto9001@gmail.com");
 					frame.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -35,107 +46,203 @@ public class MyPackage extends JFrame {
 	/**
 	 * Create the frame.
 	 */
-	public MyPackage() {
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 865, 569);
-		contentPane = new JPanel();
-		contentPane.setBackground(new Color(153, 170, 187));
-		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
+	public MyPackage(String userEmail) {
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setBounds(100, 100, 865, 569);
+        contentPane = new JPanel();
+        setResizable(false); 
+		 setLocationRelativeTo(null);
+        contentPane.setBackground(new Color(153, 170, 187));
+        contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
+        setContentPane(contentPane);
+        contentPane.setLayout(null);
 
-		setContentPane(contentPane);
-		contentPane.setLayout(null);
-		
-		JLabel lblMyPackage = new JLabel("My Package");
-		lblMyPackage.setHorizontalAlignment(SwingConstants.CENTER);
-		lblMyPackage.setForeground(Color.BLACK);
-		lblMyPackage.setFont(new Font("Tahoma", Font.BOLD, 16));
-		lblMyPackage.setBounds(48, 11, 262, 24);
-		contentPane.add(lblMyPackage);
-		
-		JLabel lblNewLabel = new JLabel("UserName :");
-		lblNewLabel.setFont(new Font("Tahoma", Font.BOLD, 12));
-		lblNewLabel.setBounds(77, 90, 83, 14);
-		contentPane.add(lblNewLabel);
-		
-		JLabel lblNewLabel_1 = new JLabel("Your Name");
-		lblNewLabel_1.setFont(new Font("Tahoma", Font.BOLD, 12));
-		lblNewLabel_1.setBounds(203, 90, 220, 14);
-		contentPane.add(lblNewLabel_1);
-		
-		JLabel lblLocation = new JLabel("Location :");
-		lblLocation.setFont(new Font("Tahoma", Font.BOLD, 12));
-		lblLocation.setBounds(77, 128, 83, 14);
-		contentPane.add(lblLocation);
-		
-		JLabel lblNewLabel_1_1 = new JLabel("Dubai");
-		lblNewLabel_1_1.setFont(new Font("Tahoma", Font.BOLD, 12));
-		lblNewLabel_1_1.setBounds(203, 128, 220, 14);
-		contentPane.add(lblNewLabel_1_1);
-		
-		JLabel lblPackage = new JLabel("Package :");
-		lblPackage.setFont(new Font("Tahoma", Font.BOLD, 12));
-		lblPackage.setBounds(77, 172, 83, 14);
-		contentPane.add(lblPackage);
-		
-		JLabel lblNewLabel_1_2 = new JLabel("Silver Package");
-		lblNewLabel_1_2.setFont(new Font("Tahoma", Font.BOLD, 12));
-		lblNewLabel_1_2.setBounds(203, 172, 220, 14);
-		contentPane.add(lblNewLabel_1_2);
-		
-		JLabel lblHotel = new JLabel("Hotel :");
-		lblHotel.setFont(new Font("Tahoma", Font.BOLD, 12));
-		lblHotel.setBounds(77, 213, 83, 14);
-		contentPane.add(lblHotel);
-		
-		JLabel lblNewLabel_1_3 = new JLabel("Hotel X");
-		lblNewLabel_1_3.setFont(new Font("Tahoma", Font.BOLD, 12));
-		lblNewLabel_1_3.setBounds(203, 213, 220, 14);
-		contentPane.add(lblNewLabel_1_3);
-		
-		JLabel lblArrival = new JLabel("Arrival :");
-		lblArrival.setFont(new Font("Tahoma", Font.BOLD, 12));
-		lblArrival.setBounds(77, 258, 83, 14);
-		contentPane.add(lblArrival);
-		
-		JLabel lblNewLabel_1_4 = new JLabel("11/10/24");
-		lblNewLabel_1_4.setFont(new Font("Tahoma", Font.BOLD, 12));
-		lblNewLabel_1_4.setBounds(203, 258, 220, 14);
-		contentPane.add(lblNewLabel_1_4);
-		
-		JLabel lblLeaving = new JLabel("Leaving :");
-		lblLeaving.setFont(new Font("Tahoma", Font.BOLD, 12));
-		lblLeaving.setBounds(77, 309, 83, 14);
-		contentPane.add(lblLeaving);
-		
-		JLabel lblNewLabel_1_5 = new JLabel("15/10/24");
-		lblNewLabel_1_5.setFont(new Font("Tahoma", Font.BOLD, 12));
-		lblNewLabel_1_5.setBounds(203, 309, 220, 14);
-		contentPane.add(lblNewLabel_1_5);
-		
-		JLabel lblTotalPerson = new JLabel("Total Person :");
-		lblTotalPerson.setFont(new Font("Tahoma", Font.BOLD, 12));
-		lblTotalPerson.setBounds(77, 356, 94, 14);
-		contentPane.add(lblTotalPerson);
-		
-		JLabel lblNewLabel_1_6 = new JLabel("2");
-		lblNewLabel_1_6.setFont(new Font("Tahoma", Font.BOLD, 12));
-		lblNewLabel_1_6.setBounds(203, 356, 220, 14);
-		contentPane.add(lblNewLabel_1_6);
-		
-		JLabel lblPrice = new JLabel("Price :");
-		lblPrice.setFont(new Font("Tahoma", Font.BOLD, 12));
-		lblPrice.setBounds(77, 409, 83, 14);
-		contentPane.add(lblPrice);
-		
-		JLabel lblNewLabel_1_7 = new JLabel("24000 BDT");
-		lblNewLabel_1_7.setFont(new Font("Tahoma", Font.BOLD, 12));
-		lblNewLabel_1_7.setBounds(203, 409, 220, 14);
-		contentPane.add(lblNewLabel_1_7);
-		
-		JLabel lblNewLabel_2 = new JLabel("");
-		lblNewLabel_2.setIcon(new ImageIcon(MyPackage.class.getResource("/Images/bookpackage.jpg")));
-		lblNewLabel_2.setBounds(320, 0, 529, 530);
-		contentPane.add(lblNewLabel_2);
-	}
+        JLabel lblMyPackage = new JLabel("My Package");
+        lblMyPackage.setHorizontalAlignment(SwingConstants.CENTER);
+        lblMyPackage.setForeground(new Color(255, 255, 255));
+        lblMyPackage.setFont(new Font("Tahoma", Font.BOLD, 16));
+        lblMyPackage.setBounds(283, 11, 262, 24);
+        contentPane.add(lblMyPackage);
 
+        JLabel lblNewLabel = new JLabel("UserName :");
+        lblNewLabel.setForeground(new Color(255, 255, 255));
+        lblNewLabel.setFont(new Font("Tahoma", Font.BOLD, 12));
+        lblNewLabel.setBounds(77, 90, 83, 14);
+        contentPane.add(lblNewLabel);
+
+        lblUserName = new JLabel("Your Name");
+        lblUserName.setForeground(new Color(255, 255, 255));
+        lblUserName.setFont(new Font("Tahoma", Font.BOLD, 12));
+        lblUserName.setBounds(203, 90, 220, 14);
+        contentPane.add(lblUserName);
+
+        JLabel lblLocationLabel = new JLabel("Location :");
+        lblLocationLabel.setForeground(new Color(255, 255, 255));
+        lblLocationLabel.setFont(new Font("Tahoma", Font.BOLD, 12));
+        lblLocationLabel.setBounds(77, 128, 83, 14);
+        contentPane.add(lblLocationLabel);
+
+        lblLocation = new JLabel("Location");
+        lblLocation.setForeground(new Color(255, 255, 255));
+        lblLocation.setFont(new Font("Tahoma", Font.BOLD, 12));
+        lblLocation.setBounds(203, 128, 220, 14);
+        contentPane.add(lblLocation);
+
+        JLabel lblPackageLabel = new JLabel("Package :");
+        lblPackageLabel.setForeground(new Color(255, 255, 255));
+        lblPackageLabel.setFont(new Font("Tahoma", Font.BOLD, 12));
+        lblPackageLabel.setBounds(77, 172, 83, 14);
+        contentPane.add(lblPackageLabel);
+
+        lblPackage = new JLabel("Package");
+        lblPackage.setForeground(new Color(255, 255, 255));
+        lblPackage.setFont(new Font("Tahoma", Font.BOLD, 12));
+        lblPackage.setBounds(203, 172, 220, 14);
+        contentPane.add(lblPackage);
+
+        JLabel lblHotelLabel = new JLabel("Hotel :");
+        lblHotelLabel.setForeground(new Color(255, 255, 255));
+        lblHotelLabel.setFont(new Font("Tahoma", Font.BOLD, 12));
+        lblHotelLabel.setBounds(77, 213, 83, 14);
+        contentPane.add(lblHotelLabel);
+
+        lblHotel = new JLabel("Hotel");
+        lblHotel.setForeground(new Color(255, 255, 255));
+        lblHotel.setFont(new Font("Tahoma", Font.BOLD, 12));
+        lblHotel.setBounds(203, 213, 220, 14);
+        contentPane.add(lblHotel);
+
+        JLabel lblArrivalLabel = new JLabel("Arrival :");
+        lblArrivalLabel.setForeground(new Color(255, 255, 255));
+        lblArrivalLabel.setFont(new Font("Tahoma", Font.BOLD, 12));
+        lblArrivalLabel.setBounds(77, 258, 83, 14);
+        contentPane.add(lblArrivalLabel);
+
+        lblArrival = new JLabel("Arrival");
+        lblArrival.setForeground(new Color(255, 255, 255));
+        lblArrival.setFont(new Font("Tahoma", Font.BOLD, 12));
+        lblArrival.setBounds(203, 258, 220, 14);
+        contentPane.add(lblArrival);
+
+        JLabel lblLeavingLabel = new JLabel("Leaving :");
+        lblLeavingLabel.setForeground(new Color(255, 255, 255));
+        lblLeavingLabel.setFont(new Font("Tahoma", Font.BOLD, 12));
+        lblLeavingLabel.setBounds(77, 309, 83, 14);
+        contentPane.add(lblLeavingLabel);
+
+        lblLeaving = new JLabel("Leaving");
+        lblLeaving.setForeground(new Color(255, 255, 255));
+        lblLeaving.setFont(new Font("Tahoma", Font.BOLD, 12));
+        lblLeaving.setBounds(203, 309, 220, 14);
+        contentPane.add(lblLeaving);
+
+        JLabel lblTotalPersonLabel = new JLabel("Total Person :");
+        lblTotalPersonLabel.setForeground(new Color(255, 255, 255));
+        lblTotalPersonLabel.setFont(new Font("Tahoma", Font.BOLD, 12));
+        lblTotalPersonLabel.setBounds(77, 356, 94, 14);
+        contentPane.add(lblTotalPersonLabel);
+
+        lblTotalPerson = new JLabel("Total Person");
+        lblTotalPerson.setForeground(new Color(255, 255, 255));
+        lblTotalPerson.setFont(new Font("Tahoma", Font.BOLD, 12));
+        lblTotalPerson.setBounds(203, 356, 220, 14);
+        contentPane.add(lblTotalPerson);
+
+        JLabel lblPriceLabel = new JLabel("Price :");
+        lblPriceLabel.setForeground(new Color(255, 255, 255));
+        lblPriceLabel.setFont(new Font("Tahoma", Font.BOLD, 12));
+        lblPriceLabel.setBounds(77, 409, 83, 14);
+        contentPane.add(lblPriceLabel);
+
+        lblPrice = new JLabel("Price");
+        lblPrice.setForeground(new Color(255, 255, 255));
+        lblPrice.setFont(new Font("Tahoma", Font.BOLD, 12));
+        lblPrice.setBounds(203, 409, 220, 14);
+        contentPane.add(lblPrice);
+        
+        JButton btnClose = new JButton("Close");
+        btnClose.addActionListener(new ActionListener() {
+        	public void actionPerformed(ActionEvent e) {
+        		new HomePage(userEmail).setVisible(true);
+        		dispose();
+        	}
+        });
+        btnClose.setFont(new Font("Tahoma", Font.BOLD, 12));
+        btnClose.setBounds(765, 496, 74, 23);
+        contentPane.add(btnClose);
+        
+                JLabel lblImage = new JLabel("");
+                lblImage.setForeground(new Color(255, 255, 255));
+                lblImage.setIcon(new ImageIcon(MyPackage.class.getResource("/Images/testBG.png")));
+                lblImage.setBounds(-124, -136, 1093, 721);
+                contentPane.add(lblImage);
+
+        // Load booking details
+        loadBookingDetails(userEmail);
+        loadPackagesAndHotels();    
+        }
+
+    private void loadBookingDetails(String userEmail) {
+        String query = "SELECT * FROM book_details WHERE Email = ?";
+
+        try (Connection connection = DatabaseConnection.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+
+            preparedStatement.setString(1, userEmail);
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            if (resultSet.next()) {
+                lblUserName.setText(resultSet.getString("User_name"));
+                lblLocation.setText(resultSet.getString("Location"));
+                //lblPackage.setText(resultSet.getString("P_ID"));  
+                //lblHotel.setText(resultSet.getString("H_ID")); 
+                pID=resultSet.getString("P_ID");
+                hID=resultSet.getString("H_ID");
+
+                lblArrival.setText(resultSet.getDate("Arrival_Date").toString());
+                lblLeaving.setText(resultSet.getDate("Leaving_Date").toString());
+                lblTotalPerson.setText(String.valueOf(resultSet.getInt("Total_Person")));
+                lblPrice.setText(resultSet.getDouble("Total_Price") + " BDT");
+            } else {
+                JOptionPane.showMessageDialog(this, "No booking details found for user: " +userEmail,
+                        "No Data", JOptionPane.INFORMATION_MESSAGE);
+            }
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(this, "Error loading booking details: " + e.getMessage(),
+                    "Database Error", JOptionPane.ERROR_MESSAGE);
+            e.printStackTrace();
+        }
+    }
+    private void loadPackagesAndHotels() {
+		
+		
+		 
+     
+
+       try (Connection conn = DatabaseConnection.getConnection()) {
+           // Load packages for the selected location
+       	 PreparedStatement packageStmt = conn.prepareStatement("SELECT P_Name FROM Packages WHERE P_ID = ?");
+           packageStmt.setString(1,pID );
+           ResultSet rsPackages = packageStmt.executeQuery();
+           while (rsPackages.next()) {
+        	   lblPackage.setText(rsPackages.getString("P_Name"));
+           
+               
+           }
+           rsPackages.close();
+
+           // Load hotels for the selected location
+           PreparedStatement hotelStmt = conn.prepareStatement("SELECT H_Name FROM Hotels WHERE H_ID= ?");
+           hotelStmt.setString(1, hID);
+           ResultSet rsHotels = hotelStmt.executeQuery();
+           while (rsHotels.next()) {
+        	   lblHotel.setText(rsHotels.getString("H_Name"));
+           
+               
+           }
+           rsHotels.close();
+       } catch (SQLException e) {
+           e.printStackTrace();
+       }
+   }
 }

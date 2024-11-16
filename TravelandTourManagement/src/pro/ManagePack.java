@@ -8,6 +8,7 @@ import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.Color;
+import java.sql.*;
 
 public class ManagePack extends JFrame {
 
@@ -28,9 +29,8 @@ public class ManagePack extends JFrame {
     private JTextField txtHotelPrice;
     private JTextField txtHotelRating;
 
-    // Counters for sequential IDs
-    private int packageIDCounter = 1;
-    private int hotelIDCounter = 1;
+    // Database connection instance
+    private Connection connection;
 
     /**
      * Launch the application.
@@ -39,7 +39,7 @@ public class ManagePack extends JFrame {
         EventQueue.invokeLater(new Runnable() {
             public void run() {
                 try {
-                    ManagePack frame = new ManagePack();
+                    ManagePack frame = new ManagePack("");
                     frame.setVisible(true);
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -51,13 +51,17 @@ public class ManagePack extends JFrame {
     /**
      * Create the frame.
      */
-    public ManagePack() {
+    public ManagePack(String userEmail) {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setBounds(100, 100, 1000, 713);
         contentPane = new JPanel();
+        contentPane.setBackground(new Color(3, 152, 158));
         contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
         setContentPane(contentPane);
         contentPane.setLayout(null);
+
+        // Establishing connection
+        connection = DatabaseConnection.getConnection();
 
         // Package Table and Controls
         JLabel lblPackageTable = new JLabel("Packages");
@@ -69,6 +73,7 @@ public class ManagePack extends JFrame {
         packageTable = new JTable(new DefaultTableModel(new Object[][] {}, new String[] {
                 "P_ID", "Location", "P_Price", "P_Name", "Description"
         }));
+        packageTable.setBackground(new Color(255, 255, 255));
         JScrollPane packageScrollPane = new JScrollPane(packageTable);
         packageScrollPane.setBounds(47, 96, 400, 300);
         contentPane.add(packageScrollPane);
@@ -108,25 +113,12 @@ public class ManagePack extends JFrame {
 
         JButton btnAddPackage = new JButton("Add Package");
         btnAddPackage.setBounds(167, 576, 150, 30);
-        contentPane.add(btnAddPackage);
-
-        // Add action listener for the package "Add" button
         btnAddPackage.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                String location = txtPackageLocation.getText();
-                String p_price = txtPackagePrice.getText();
-                String p_name = txtPackageName.getText();
-                String description = txtPackageDescription.getText();
-
-                if (!location.isEmpty() && !p_price.isEmpty() && !p_name.isEmpty() && !description.isEmpty()) {
-                    DefaultTableModel model = (DefaultTableModel) packageTable.getModel();
-                    model.addRow(new Object[]{packageIDCounter++, location, p_price, p_name, description});
-                    clearPackageFields();
-                } else {
-                    JOptionPane.showMessageDialog(null, "Please enter all package details.");
-                }
+                addPackage();
             }
         });
+        contentPane.add(btnAddPackage);
 
         // Hotel Table and Controls
         JLabel lblHotelTable = new JLabel("Hotels");
@@ -177,13 +169,25 @@ public class ManagePack extends JFrame {
 
         JButton btnAddHotel = new JButton("Add Hotel");
         btnAddHotel.setBounds(617, 576, 150, 30);
+        btnAddHotel.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                addHotel();
+            }
+        });
         contentPane.add(btnAddHotel);
-        
+
         JButton btnClose = new JButton("Close");
+        btnClose.addActionListener(new ActionListener() {
+        	public void actionPerformed(ActionEvent e) {
+        		new HomePage(userEmail).setVisible(true);
+                
+        		dispose();
+        	}
+        });
         btnClose.setFont(new Font("Tahoma", Font.BOLD, 16));
         btnClose.setBounds(862, 629, 100, 30);
         contentPane.add(btnClose);
-        
+
         JLabel lblManagePackageAnd = new JLabel("Manage Package and Hotel");
         lblManagePackageAnd.setHorizontalAlignment(SwingConstants.CENTER);
         lblManagePackageAnd.setForeground(Color.BLACK);
@@ -191,23 +195,117 @@ public class ManagePack extends JFrame {
         lblManagePackageAnd.setBounds(346, 11, 262, 24);
         contentPane.add(lblManagePackageAnd);
 
-        // Add action listener for the hotel "Add" button
-        btnAddHotel.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                String location = txtHotelLocation.getText();
-                String h_name = txtHotelName.getText();
-                String h_price = txtHotelPrice.getText();
-                String rating = txtHotelRating.getText();
+        // Initial data fetch
+        refreshPackageTable();
+        refreshHotelTable();
+    }
 
-                if (!location.isEmpty() && !h_name.isEmpty() && !h_price.isEmpty() && !rating.isEmpty()) {
-                    DefaultTableModel model = (DefaultTableModel) hotelTable.getModel();
-                    model.addRow(new Object[]{hotelIDCounter++, location, h_name, h_price, rating});
-                    clearHotelFields();
-                } else {
-                    JOptionPane.showMessageDialog(null, "Please enter all hotel details.");
-                }
+    // Method to add package
+    private void addPackage() {
+        String location = txtPackageLocation.getText();
+        String price = txtPackagePrice.getText();
+        String name = txtPackageName.getText();
+        String description = txtPackageDescription.getText();
+
+        if (location.isEmpty() || price.isEmpty() || name.isEmpty() || description.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Please fill in all fields.", "Error", JOptionPane.ERROR_MESSAGE);
+        } else {
+            try {
+                String query = "INSERT INTO Packages (Location, P_Price, P_Name, Description) VALUES (?, ?, ?, ?)";
+                PreparedStatement stmt = connection.prepareStatement(query);
+                stmt.setString(1, location);
+                stmt.setString(2, price);
+                stmt.setString(3, name);
+                stmt.setString(4, description);
+                stmt.executeUpdate();
+
+                JOptionPane.showMessageDialog(this, "Package added successfully.");
+                clearPackageFields();
+                refreshPackageTable();
+            } catch (SQLException ex) {
+                ex.printStackTrace();
+                JOptionPane.showMessageDialog(this, "Error adding package.", "Error", JOptionPane.ERROR_MESSAGE);
             }
-        });
+        }
+    }
+
+    // Method to add hotel
+    private void addHotel() {
+        String location = txtHotelLocation.getText();
+        String name = txtHotelName.getText();
+        String price = txtHotelPrice.getText();
+        String rating = txtHotelRating.getText();
+
+        if (location.isEmpty() || name.isEmpty() || price.isEmpty() || rating.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Please fill in all fields.", "Error", JOptionPane.ERROR_MESSAGE);
+        } else {
+            try {
+                String query = "INSERT INTO Hotels (Location, H_Name, H_Price, Rating) VALUES (?, ?, ?, ?)";
+                PreparedStatement stmt = connection.prepareStatement(query);
+                stmt.setString(1, location);
+                stmt.setString(2, name);
+                stmt.setString(3, price);
+                stmt.setString(4, rating);
+                stmt.executeUpdate();
+
+                JOptionPane.showMessageDialog(this, "Hotel added successfully.");
+                clearHotelFields();
+                refreshHotelTable();
+            } catch (SQLException ex) {
+                ex.printStackTrace();
+                JOptionPane.showMessageDialog(this, "Error adding hotel.", "Error", JOptionPane.ERROR_MESSAGE);
+            }
+        }
+    }
+
+    // Refresh the package table to reflect changes
+    private void refreshPackageTable() {
+        try {
+            String query = "SELECT * FROM Packages";
+            Statement stmt = connection.createStatement();
+            ResultSet rs = stmt.executeQuery(query);
+
+            DefaultTableModel model = (DefaultTableModel) packageTable.getModel();
+            model.setRowCount(0); // Clear the table
+
+            while (rs.next()) {
+                Object[] row = {
+                    rs.getInt("P_ID"),
+                    rs.getString("Location"),
+                    rs.getString("P_Price"),
+                    rs.getString("P_Name"),
+                    rs.getString("Description")
+                };
+                model.addRow(row);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    // Refresh the hotel table to reflect changes
+    private void refreshHotelTable() {
+        try {
+            String query = "SELECT * FROM Hotels";
+            Statement stmt = connection.createStatement();
+            ResultSet rs = stmt.executeQuery(query);
+
+            DefaultTableModel model = (DefaultTableModel) hotelTable.getModel();
+            model.setRowCount(0); // Clear the table
+
+            while (rs.next()) {
+                Object[] row = {
+                    rs.getInt("H_ID"),
+                    rs.getString("Location"),
+                    rs.getString("H_Name"),
+                    rs.getString("H_Price"),
+                    rs.getString("Rating")
+                };
+                model.addRow(row);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
     // Clear package input fields after adding a row

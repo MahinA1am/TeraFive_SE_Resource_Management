@@ -7,14 +7,22 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+
 import java.awt.Font;
 import java.awt.Image;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 
 import javax.swing.SwingConstants;
 import javax.swing.JTextField;
 import javax.swing.JButton;
 import javax.swing.ImageIcon;
 import java.awt.Color;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
 
 public class Login extends JFrame {
 
@@ -22,6 +30,7 @@ public class Login extends JFrame {
 	private JPanel contentPane;
 	private JTextField textField;
 	private JTextField textField_1;
+	private JLabel myemail;
 
 	/**
 	 * Launch the application.
@@ -60,11 +69,12 @@ public class Login extends JFrame {
 		welcome.setBounds(533, 83, 107, 24);
 		contentPane.add(welcome);
 		
-		JLabel email = new JLabel("Email");
-		email.setForeground(new Color(255, 255, 255));
-		email.setFont(new Font("Tahoma", Font.BOLD, 12));
-		email.setBounds(447, 123, 46, 14);
-		contentPane.add(email);
+		JLabel myemail;
+		myemail = new JLabel("Email");
+		myemail.setForeground(new Color(255, 255, 255));
+		myemail.setFont(new Font("Tahoma", Font.BOLD, 12));
+		myemail.setBounds(447, 123, 46, 14);
+		contentPane.add(myemail);
 		
 		textField = new JTextField();
 		textField.setFont(new Font("Tahoma", Font.BOLD, 12));
@@ -91,6 +101,11 @@ public class Login extends JFrame {
 		contentPane.add(loginButton);
 		
 		JButton closeButton = new JButton("Close");
+		closeButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				dispose();
+			}
+		});
 		closeButton.setIcon(new ImageIcon(Login.class.getResource("/Images/close.png")));
 		closeButton.setFont(new Font("Tahoma", Font.BOLD, 13));
 		closeButton.setBounds(447, 350, 262, 23);
@@ -119,6 +134,12 @@ public class Login extends JFrame {
 		contentPane.add(lblNewLabel);
 		
 		JButton loginButton_1 = new JButton("Registration");
+		loginButton_1.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				  new Register().setVisible(true);
+		            dispose();
+			}
+		});
 		ImageIcon myIcon = new ImageIcon(Login.class.getResource("/Images/add.png"));
 
 		// Resize the image to a new width and height (for example, 50x50)
@@ -135,5 +156,41 @@ public class Login extends JFrame {
 		lblNewLabel_2.setHorizontalAlignment(SwingConstants.CENTER);
 		lblNewLabel_2.setBounds(-520, -277, 1280, 720);
 		contentPane.add(lblNewLabel_2);
+		
+		loginButton.addActionListener(e -> {
+		    String email = textField.getText();
+		    String password = textField_1.getText();
+		    
+		    if (email.isEmpty() || password.isEmpty()) {
+		        JOptionPane.showMessageDialog(null, "Both email and password fields are required. Please fill in all fields.", "Error", JOptionPane.ERROR_MESSAGE);
+		        return;
+		    }
+
+		    try (Connection connection = DatabaseConnection.getConnection()) {
+		        String query = "SELECT * FROM users WHERE email = ? AND password = ?";
+		        try (PreparedStatement statement = connection.prepareStatement(query)) {
+		            statement.setString(1, email);
+		            statement.setString(2, password);
+		            ResultSet resultSet = statement.executeQuery();
+
+		            if (resultSet.next()) {
+		                JOptionPane.showMessageDialog(this, "Login successful!");
+		                
+		               
+		               
+
+		                new HomePage(email).setVisible(true);
+		                dispose();
+		            } else {
+		                JOptionPane.showMessageDialog(this, "Invalid email or password.");
+		            }
+		        }
+		    } catch (SQLException ex) {
+		        ex.printStackTrace();
+		        JOptionPane.showMessageDialog(this, "Error during login.");
+		    }
+		});
+
+
 	}
 }

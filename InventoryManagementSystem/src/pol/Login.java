@@ -117,7 +117,7 @@ public class Login extends JFrame {
 		
 		JLabel bgImage = new JLabel("");
 		bgImage.setHorizontalAlignment(SwingConstants.CENTER);
-		bgImage.setIcon(new ImageIcon("C:\\Users\\User\\eclipse-workspace\\InventoryManagementSystem\\src\\Images\\3274764.jpg"));
+		bgImage.setIcon(new ImageIcon(Login.class.getResource("/Images/3274764.jpg")));
 		bgImage.setBounds(0, 0, 3000, 2000);
 		myFrame.add(bgImage);
 	}

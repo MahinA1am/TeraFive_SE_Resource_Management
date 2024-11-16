@@ -122,6 +122,7 @@ public class Category extends JFrame {
 		contentPane.add(btnClose);
 		
 		lblNewLabel_2 = new JLabel("");
+		lblNewLabel_2.setHorizontalAlignment(SwingConstants.CENTER);
 		lblNewLabel_2.setIcon(new ImageIcon(Category.class.getResource("/Images/4813762.jpg")));
 		lblNewLabel_2.setBounds(0, 0, 3000, 2000);
 		contentPane.add(lblNewLabel_2);
