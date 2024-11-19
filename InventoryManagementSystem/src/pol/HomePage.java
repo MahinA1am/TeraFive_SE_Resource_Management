@@ -25,7 +25,7 @@ public class HomePage extends JFrame {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					HomePage frame = new HomePage();
+					HomePage frame = new HomePage("","");
 					frame.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -37,16 +37,24 @@ public class HomePage extends JFrame {
 	/**
 	 * Create the frame.
 	 */
-	public HomePage() {
+	public HomePage(String userEmail,String userRole) {
+		
+		int a = userRole.equals("superadmin") ? 0 : 1;
+		
+		//System.out.println(userRole);
+		
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 1034, 686);
 		contentPane = new JPanel();
+		
 		 setResizable(false); 
 		 setLocationRelativeTo(null);
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
+		
+		if(a==0) {
 		
 		JButton btnNewButton = new JButton("User");
 		btnNewButton.addActionListener(new ActionListener() {
@@ -56,10 +64,12 @@ public class HomePage extends JFrame {
 	                dispose();
 			}
 		});
+		
 		btnNewButton.setIcon(new ImageIcon(HomePage.class.getResource("/Images/Users.png")));
 		btnNewButton.setFont(new Font("Tahoma", Font.BOLD, 12));
 		btnNewButton.setBounds(10, 29, 107, 40);
 		contentPane.add(btnNewButton);
+		}
 		
 		JButton btnNewButton_1 = new JButton("Category");
 		btnNewButton_1.addActionListener(new ActionListener() {

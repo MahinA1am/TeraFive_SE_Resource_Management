@@ -13,6 +13,8 @@ import javax.swing.JButton;
 import javax.swing.ImageIcon;
 import javax.swing.SwingConstants;
 import java.awt.event.ActionListener;
+import java.sql.Connection;
+import java.sql.SQLException;
 import java.awt.event.ActionEvent;
 
 public class Login extends JFrame {
@@ -84,9 +86,40 @@ public class Login extends JFrame {
 		JButton loginButton = new JButton("Login");
 		loginButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				   HomePage homeFrame = new HomePage();
-	                homeFrame.setVisible(true);
-	                dispose();
+				String email = emailText.getText();
+		        String password = passText.getText();
+
+		        if (email.isEmpty() || password.isEmpty()) {
+		            JOptionPane.showMessageDialog(null, "Please enter both email and password.", "Error", JOptionPane.ERROR_MESSAGE);
+		            return;
+		        }
+
+		        try (Connection connection = DatabaseConnection.getConnection()) {
+		            String query = "SELECT * FROM myuser WHERE email = ? AND password = ?";
+		            try (var preparedStatement = connection.prepareStatement(query)) {
+		                preparedStatement.setString(1, email);
+		                preparedStatement.setString(2, password);
+
+		                try (var resultSet = preparedStatement.executeQuery()) {
+		                    if (resultSet.next()) {
+		                        JOptionPane.showMessageDialog(null, "Login successful!", "Success", JOptionPane.INFORMATION_MESSAGE);
+		                        String userRole = resultSet.getString("userRole");
+		                        
+		                        
+		                        HomePage homeFrame = new HomePage(email,userRole);
+		                        
+		                        homeFrame.setVisible(true);
+		                        dispose();
+		                    } else {
+		                        JOptionPane.showMessageDialog(null, "Invalid email or password.", "Login Failed", JOptionPane.ERROR_MESSAGE);
+		                    }
+		                }
+		            }
+		        } catch (SQLException ex) {
+		            JOptionPane.showMessageDialog(null, "Database connection error: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+		            ex.printStackTrace();
+		        }
+				  
 			}
 		});
 		loginButton.setIcon(new ImageIcon(Login.class.getResource("/Images/login.png")));

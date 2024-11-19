@@ -6,6 +6,8 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+
 import java.awt.Font;
 import java.awt.Color;
 import javax.swing.SwingConstants;
@@ -16,6 +18,7 @@ import javax.swing.JTextField;
 import javax.swing.JButton;
 import javax.swing.ImageIcon;
 import java.awt.event.ActionListener;
+import java.sql.Connection;
 import java.awt.event.ActionEvent;
 
 public class ManageCustomer extends JFrame {
@@ -127,6 +130,8 @@ public class ManageCustomer extends JFrame {
 		contentPane.add(btnNewButton);
 		
 		btnNewButton_1 = new JButton("Update");
+		btnNewButton_1.setEnabled(false);
+    	
 		btnNewButton_1.setBounds(545, 311, 89, 23);
 		btnNewButton_1.setFont(new Font("Tahoma", Font.BOLD, 12));
 		contentPane.add(btnNewButton_1);
@@ -139,7 +144,7 @@ public class ManageCustomer extends JFrame {
 		btnClose = new JButton("Close");
 		btnClose.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				   HomePage homeFrame = new HomePage();
+				   HomePage homeFrame = new HomePage("","");
 	                homeFrame.setVisible(true);
 	                dispose();
 			}
@@ -152,6 +157,137 @@ public class ManageCustomer extends JFrame {
 		lblNewLabel_4.setIcon(new ImageIcon(ManageCustomer.class.getResource("/Images/4813762.jpg")));
 		lblNewLabel_4.setBounds(0, 0, 3000, 2000);
 		contentPane.add(lblNewLabel_4);
+		
+		btnNewButton.addActionListener(new ActionListener() {
+		    public void actionPerformed(ActionEvent e) {
+		        saveCustomer();
+		        
+		    }
+		});
+
+		btnNewButton_1.addActionListener(new ActionListener() {
+		    public void actionPerformed(ActionEvent e) {
+		        updateCustomer();
+		        btnNewButton_1.setEnabled(false);
+		    	btnNewButton.setEnabled(true);
+		    }
+		});
+
+		btnReset.addActionListener(new ActionListener() {
+		    public void actionPerformed(ActionEvent e) {
+		        resetFields();
+		        btnNewButton_1.setEnabled(false);
+		    	btnNewButton.setEnabled(true);
+		    }
+		});
+		table.getSelectionModel().addListSelectionListener(event -> {
+		    int selectedRow = table.getSelectedRow();
+		    if (selectedRow != -1) {
+		        textField.setText(table.getValueAt(selectedRow, 1).toString());
+		        textField_1.setText(table.getValueAt(selectedRow, 3).toString());
+		        textField_2.setText(table.getValueAt(selectedRow, 2).toString());
+		        btnNewButton_1.setEnabled(true);
+		    	btnNewButton.setEnabled(false);
+		    }
+		});
+		
+		loadCustomerData();
+
+
 	}
+	private void saveCustomer() {
+	    try (Connection con = DatabaseConnection.getConnection()) {
+	        String name = textField.getText();
+	        String mobileNumber = textField_1.getText();
+	        String email = textField_2.getText();
+
+	        if (name.isEmpty() || mobileNumber.isEmpty() || email.isEmpty()) {
+	            JOptionPane.showMessageDialog(this, "Please fill all fields.", "Validation Error", JOptionPane.ERROR_MESSAGE);
+	            return;
+	        }
+
+	        String query = "INSERT INTO customer (name, email, mobile_number) VALUES (?, ?, ?)";
+	        try (var ps = con.prepareStatement(query)) {
+	            ps.setString(1, name);
+	            ps.setString(2, email);
+	            ps.setString(3, mobileNumber);
+	            ps.executeUpdate();
+	            JOptionPane.showMessageDialog(this, "Customer saved successfully.");
+	            loadCustomerData();
+	            resetFields();
+	        }
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	        JOptionPane.showMessageDialog(this, "Error saving customer: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+	    }
+	}
+	private void updateCustomer() {
+	    try (Connection con = DatabaseConnection.getConnection()) {
+	        int selectedRow = table.getSelectedRow();
+	        if (selectedRow == -1) {
+	            JOptionPane.showMessageDialog(this, "Please select a customer to update.", "Validation Error", JOptionPane.ERROR_MESSAGE);
+	            return;
+	        }
+
+	        int id = Integer.parseInt(table.getValueAt(selectedRow, 0).toString());
+	        String name = textField.getText();
+	        String mobileNumber = textField_1.getText();
+	        String email = textField_2.getText();
+
+	        if (name.isEmpty() || mobileNumber.isEmpty() || email.isEmpty()) {
+	            JOptionPane.showMessageDialog(this, "Please fill all fields.", "Validation Error", JOptionPane.ERROR_MESSAGE);
+	            return;
+	        }
+
+	        String query = "UPDATE customer SET name = ?, email = ?, mobile_number = ? WHERE id = ?";
+	        try (var ps = con.prepareStatement(query)) {
+	            ps.setString(1, name);
+	            ps.setString(2, email);
+	            ps.setString(3, mobileNumber);
+	            ps.setInt(4, id);
+	            ps.executeUpdate();
+	            JOptionPane.showMessageDialog(this, "Customer updated successfully.");
+	            loadCustomerData();
+	            resetFields();
+	        }
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	        JOptionPane.showMessageDialog(this, "Error updating customer: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+	    }
+	}
+	private void resetFields() {
+	    textField.setText("");
+	    textField_1.setText("");
+	    textField_2.setText("");
+	    table.clearSelection();
+	}
+	
+	private void loadCustomerData() {
+	    try (Connection con = DatabaseConnection.getConnection()) {
+	        DefaultTableModel model = (DefaultTableModel) table.getModel();
+	        model.setRowCount(0);
+
+	        String query = "SELECT * FROM customer";
+	        try (var ps = con.prepareStatement(query);
+	             var rs = ps.executeQuery()) {
+	            while (rs.next()) {
+	                model.addRow(new Object[]{
+	                    rs.getInt("id"),
+	                    rs.getString("name"),
+	                    rs.getString("email"),
+	                    rs.getString("mobile_number")
+	                });
+	            }
+	        }
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	        JOptionPane.showMessageDialog(this, "Error loading customer data: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+	    }
+	}
+
+
+
+
+	
 
 }

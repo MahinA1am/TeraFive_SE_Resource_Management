@@ -6,6 +6,7 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.ImageIcon;
 import javax.swing.SwingConstants;
 import java.awt.Font;
@@ -18,6 +19,8 @@ import javax.swing.JComboBox;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
 import java.awt.event.ActionListener;
+import java.sql.Connection;
+import java.sql.SQLException;
 import java.awt.event.ActionEvent;
 
 public class ManageUser extends JFrame {
@@ -30,6 +33,8 @@ public class ManageUser extends JFrame {
 	private JTextField textField_2;
 	private JTextField textField_3;
 	private JTextField textField_4;
+	//private String pass="";
+	JComboBox comboBox;
 
 	/**
 	 * Launch the application.
@@ -81,6 +86,9 @@ public class ManageUser extends JFrame {
 				"ID", "Name", "Email", "Mobile Number", "Address", "Status"
 			}
 		));
+		
+		 
+
 		
 		JLabel lblNewLabel_2 = new JLabel("Name");
 		lblNewLabel_2.setFont(new Font("Tahoma", Font.BOLD, 12));
@@ -147,23 +155,111 @@ public class ManageUser extends JFrame {
 		lblNewLabel_3_1_1.setBounds(487, 397, 128, 14);
 		contentPane.add(lblNewLabel_3_1_1);
 		
-		JComboBox comboBox = new JComboBox();
+		comboBox = new JComboBox();
 		comboBox.setFont(new Font("Tahoma", Font.BOLD, 12));
 		comboBox.setModel(new DefaultComboBoxModel(new String[] {"Active", "Inactive"}));
 		comboBox.setBounds(487, 422, 328, 22);
 		contentPane.add(comboBox);
 		
 		JButton btnNewButton = new JButton("Save");
+		btnNewButton.addActionListener(new ActionListener() {
+		    public void actionPerformed(ActionEvent e) {
+		        String name = textField.getText();
+		        String mobileNumber = textField_1.getText();
+		        String email = textField_2.getText();
+		        String password = textField_3.getText();
+		        String address = textField_4.getText();
+		        String status = comboBox.getSelectedItem().toString();
+
+		        if (name.isEmpty() || mobileNumber.isEmpty() || email.isEmpty() || password.isEmpty() || address.isEmpty()) {
+		            JOptionPane.showMessageDialog(null, "Please fill all fields.", "Error", JOptionPane.ERROR_MESSAGE);
+		            return;
+		        }
+
+		        try (Connection connection = DatabaseConnection.getConnection()) {
+		            String query = "INSERT INTO myuser (userRole,name, mobileNumber, email, password, address, status) VALUES (?,?, ?, ?, ?, ?, ?)";
+		            try (var preparedStatement = connection.prepareStatement(query)) {
+		            	preparedStatement.setString(1, "user");
+		                preparedStatement.setString(2, name);
+		                preparedStatement.setString(3, mobileNumber);
+		                preparedStatement.setString(4, email);
+		                preparedStatement.setString(5, password); 
+		                preparedStatement.setString(6, address);
+		                preparedStatement.setString(7, status);
+
+		                int rowsInserted = preparedStatement.executeUpdate();
+		                if (rowsInserted > 0) {
+		                    JOptionPane.showMessageDialog(null, "User added successfully!", "Success", JOptionPane.INFORMATION_MESSAGE);
+		                    loadUserData();
+		                    ResetValue();
+		                    
+		                }
+		            }
+		        } catch (Exception ex) {
+		            JOptionPane.showMessageDialog(null, "Error while adding user: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+		            ex.printStackTrace();
+		        }
+		    }
+		});
 		btnNewButton.setFont(new Font("Tahoma", Font.BOLD, 12));
 		btnNewButton.setBounds(487, 471, 74, 23);
 		contentPane.add(btnNewButton);
 		
 		JButton btnNewButton_1 = new JButton("Update");
+		btnNewButton_1.setEnabled(false);
+		btnNewButton_1.addActionListener(new ActionListener() {
+		    public void actionPerformed(ActionEvent e) {
+		        String name = textField.getText();
+		        String mobileNumber = textField_1.getText();
+		        String email = textField_2.getText();
+		        String password = textField_3.getText();
+		        String address = textField_4.getText();
+		        String status = comboBox.getSelectedItem().toString();
+
+		        if (name.isEmpty() || mobileNumber.isEmpty() || email.isEmpty() || address.isEmpty()) {
+		            JOptionPane.showMessageDialog(null, "Please fill all fields.", "Error", JOptionPane.ERROR_MESSAGE);
+		            return;
+		        }
+
+		        try (Connection connection = DatabaseConnection.getConnection()) {
+		            String query = "UPDATE myuser SET name = ?, mobileNumber = ?, password = ?, address = ?, status = ? WHERE email = ?";
+		            try (var preparedStatement = connection.prepareStatement(query)) {
+		                preparedStatement.setString(1, name);
+		                preparedStatement.setString(2, mobileNumber);
+		                preparedStatement.setString(3, password);
+		                preparedStatement.setString(4, address);
+		                preparedStatement.setString(5, status);
+		                preparedStatement.setString(6, email);
+
+		                int rowsUpdated = preparedStatement.executeUpdate();
+		                if (rowsUpdated > 0) {
+		                    JOptionPane.showMessageDialog(null, "User updated successfully!", "Success", JOptionPane.INFORMATION_MESSAGE);
+		                    loadUserData();
+		                    ResetValue();
+		                } else {
+		                    JOptionPane.showMessageDialog(null, "No user found with the provided email.", "Update Failed", JOptionPane.ERROR_MESSAGE);
+		                }
+		            }
+		        } catch (Exception ex) {
+		            JOptionPane.showMessageDialog(null, "Error while updating user: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+		            ex.printStackTrace();
+		        }
+		    	btnNewButton_1.setEnabled(false);
+		    	btnNewButton.setEnabled(true);
+		    }
+		});
 		btnNewButton_1.setFont(new Font("Tahoma", Font.BOLD, 12));
 		btnNewButton_1.setBounds(571, 471, 89, 23);
 		contentPane.add(btnNewButton_1);
 		
 		JButton btnReset = new JButton("Reset");
+		btnReset.addActionListener(new ActionListener() { 
+		    public void actionPerformed(ActionEvent e) {
+		    	ResetValue();
+		    	btnNewButton_1.setEnabled(false);
+		    	btnNewButton.setEnabled(true);
+		    }
+		});
 		btnReset.setFont(new Font("Tahoma", Font.BOLD, 12));
 		btnReset.setBounds(670, 471, 74, 23);
 		contentPane.add(btnReset);
@@ -171,7 +267,7 @@ public class ManageUser extends JFrame {
 		JButton btnClose = new JButton("Close");
 		btnClose.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				   HomePage homeFrame = new HomePage();
+				   HomePage homeFrame = new HomePage("","");
 	                homeFrame.setVisible(true);
 	                dispose();
 			}
@@ -184,5 +280,61 @@ public class ManageUser extends JFrame {
 		lblNewLabel.setIcon(new ImageIcon(ManageUser.class.getResource("/Images/4813762.jpg")));
 		lblNewLabel.setBounds(0, 0, 3000, 2000);
 		contentPane.add(lblNewLabel);
+		
+		table.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                int row = table.getSelectedRow();
+                if (row != -1) { 
+                    textField.setText(table.getValueAt(row, 1).toString()); 
+                    textField_1.setText(table.getValueAt(row, 3).toString()); 
+                    textField_2.setText(table.getValueAt(row, 2).toString()); 
+               
+                    textField_4.setText(table.getValueAt(row, 4).toString()); 
+                    comboBox.setSelectedItem(table.getValueAt(row, 5).toString());
+                	btnNewButton_1.setEnabled(true);
+    		    	btnNewButton.setEnabled(false);
+                }
+            }
+        });
+		
+		loadUserData();
 	}
+	
+	private void loadUserData() {
+	    DefaultTableModel model = (DefaultTableModel) table.getModel();
+	    model.setRowCount(0); 
+
+	    try (Connection connection = DatabaseConnection.getConnection()) {
+	        String query = "SELECT * FROM myuser";
+	        try (var preparedStatement = connection.prepareStatement(query);
+	             var resultSet = preparedStatement.executeQuery()) {
+
+	            while (resultSet.next()) {
+	                int id = resultSet.getInt("id");
+	                String name = resultSet.getString("name");
+	                String email = resultSet.getString("email");
+	                String mobileNumber = resultSet.getString("mobileNumber");
+	                String address = resultSet.getString("address");
+	                String status = resultSet.getString("status");
+
+	               
+	                model.addRow(new Object[]{id, name, email, mobileNumber, address, status});
+	            }
+	        }
+	    } catch (SQLException ex) {
+	        JOptionPane.showMessageDialog(null, "Error while fetching user data: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+	        ex.printStackTrace();
+	    }
+	}
+	private void ResetValue() {
+		   textField.setText("");
+	        textField_1.setText("");
+	        textField_2.setText("");
+	        textField_3.setText("");
+	        textField_4.setText("");
+	        comboBox.setSelectedIndex(0);
+	        table.clearSelection();
+	}
+	
+
 }

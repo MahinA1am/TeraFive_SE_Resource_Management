@@ -7,6 +7,8 @@ import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 import javax.swing.JButton;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+
 import java.awt.Font;
 import java.awt.Color;
 import javax.swing.SwingConstants;
@@ -16,6 +18,8 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.JTextField;
 import javax.swing.ImageIcon;
 import java.awt.event.ActionListener;
+import java.sql.Connection;
+import java.sql.SQLException;
 import java.awt.event.ActionEvent;
 
 public class ManageOrder extends JFrame {
@@ -32,6 +36,8 @@ public class ManageOrder extends JFrame {
 	private JTextField textField_4;
 	private JTextField textField_5;
 	private JTextField textField_6;
+	private JLabel lblNewLabel_7;
+	private int pid;
 
 	/**
 	 * Launch the application.
@@ -222,16 +228,118 @@ public class ManageOrder extends JFrame {
 		contentPane.add(textField_6);
 		
 		JButton btnNewButton = new JButton("Add To Cart");
+		btnNewButton.addActionListener(new ActionListener() {
+		    public void actionPerformed(ActionEvent e) {
+		        String productName = textField_3.getText();
+		        String priceText = textField_4.getText();
+		        String description = textField_5.getText();
+		        String quantityText = textField_6.getText();
+
+		        if (productName.isEmpty() || priceText.isEmpty() || description.isEmpty() || quantityText.isEmpty()) {
+		            JOptionPane.showMessageDialog(null, "Please fill all the fields.", "Error", JOptionPane.INFORMATION_MESSAGE);
+		            return;
+		        }
+
+		        int pid = -1;
+		        int selectedRow = table_1.getSelectedRow();
+		        if (selectedRow != -1) {
+		            try {
+		                
+		            	 String pId = table_1.getValueAt(selectedRow, 0).toString();
+		            	    pid = Integer.parseInt(pId);
+		            } catch (Exception ex) {
+		                JOptionPane.showMessageDialog(null, "Error retrieving product ID.", "Error", JOptionPane.ERROR_MESSAGE);
+		                return;
+		            }
+		        }
+
+		        try {
+		            int quantity = Integer.parseInt(quantityText);
+		            double price = Double.parseDouble(priceText);
+
+		            int availableQuantity = getAvailableQuantityFromDB(productName);
+		            if (availableQuantity < quantity) {
+		                JOptionPane.showMessageDialog(null, "Insufficient stock! Available quantity: " + availableQuantity, 
+		                                              "Error", JOptionPane.ERROR_MESSAGE);
+		                return;
+		            }
+
+		            double subtotal = quantity * price;
+
+		            DefaultTableModel model = (DefaultTableModel) table_2.getModel();
+		            model.addRow(new Object[]{pid, productName, quantity, price, description, subtotal});
+
+		            updateProductQuantityInDB(productName, availableQuantity - quantity);
+		            updateTotalAmount();
+		            resetTextField();
+		        } catch (NumberFormatException ex) {
+		            JOptionPane.showMessageDialog(null, "Please enter valid numbers for quantity and price.", "Error", JOptionPane.ERROR_MESSAGE);
+		        } catch (Exception ex) {
+		            JOptionPane.showMessageDialog(null, "Error: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+		            ex.printStackTrace();
+		        }
+
+		        loadProductData();
+		    }
+		});
+
+
+
 		btnNewButton.setFont(new Font("Tahoma", Font.BOLD, 12));
 		btnNewButton.setBounds(416, 714, 328, 23);
 		contentPane.add(btnNewButton);
 		
-		JLabel lblNewLabel_7 = new JLabel("Total Amount : 0000");
+		lblNewLabel_7 = new JLabel("Total Amount : 0000");
 		lblNewLabel_7.setFont(new Font("Tahoma", Font.BOLD, 15));
 		lblNewLabel_7.setBounds(893, 422, 254, 29);
 		contentPane.add(lblNewLabel_7);
 		
 		JButton btnNewButton_1 = new JButton("Save Order Details");
+		btnNewButton_1.addActionListener(new ActionListener() {
+		    public void actionPerformed(ActionEvent e) {
+		        String customerName = textField.getText();
+		        String customerEmail = textField_2.getText();
+
+		        String billId = "BILL" + System.currentTimeMillis();
+
+		        DefaultTableModel cartModel = (DefaultTableModel) table_2.getModel();
+		        for (int i = 0; i < cartModel.getRowCount(); i++) {
+		            // Ensure the first column contains product ID (not name)
+		            int productId = Integer.parseInt(cartModel.getValueAt(i, 0).toString());
+		            // If product name is needed, use a different column index
+		            String productName = cartModel.getValueAt(i, 1).toString();  // Assuming the second column has the product name
+		            int quantity = Integer.parseInt(cartModel.getValueAt(i, 2).toString());
+		            double pricePerUnit = Double.parseDouble(cartModel.getValueAt(i, 3).toString());
+		            String description = cartModel.getValueAt(i, 4).toString();
+		            double totalPrice = quantity * pricePerUnit;
+
+		            try (Connection con = DatabaseConnection.getConnection()) {
+		                String query = "INSERT INTO order_details (bill_id, customer_id, product_id, quantity, price_per_unit, total_price) "
+		                        + "VALUES (?, ?, ?, ?, ?, ?)";
+		                try (var ps = con.prepareStatement(query)) {
+		                    ps.setString(1, billId);
+		                    ps.setInt(2, getCustomerIdByEmail(customerEmail));
+		                    ps.setInt(3, productId);  // product_id
+		                    ps.setInt(4, quantity);
+		                    ps.setDouble(5, pricePerUnit);
+		                    ps.setDouble(6, totalPrice);
+
+		                    ps.executeUpdate();
+		                }
+		            } catch (SQLException ex) {
+		                ex.printStackTrace();
+		                JOptionPane.showMessageDialog(null, "Error saving order: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+		            }
+		        
+		        }
+
+		        JOptionPane.showMessageDialog(null, "Order details saved successfully!", "Success", JOptionPane.INFORMATION_MESSAGE);
+		    }
+		});
+		
+		
+
+
 		btnNewButton_1.setFont(new Font("Tahoma", Font.BOLD, 12));
 		btnNewButton_1.setBounds(813, 496, 334, 23);
 		contentPane.add(btnNewButton_1);
@@ -244,7 +352,7 @@ public class ManageOrder extends JFrame {
 		JButton btnNewButton_3 = new JButton("Close");
 		btnNewButton_3.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				   HomePage homeFrame = new HomePage();
+				   HomePage homeFrame = new HomePage("","");
 	                homeFrame.setVisible(true);
 	                dispose();
 			}
@@ -257,5 +365,173 @@ public class ManageOrder extends JFrame {
 		lblNewLabel.setIcon(new ImageIcon(ManageOrder.class.getResource("/Images/4813762.jpg")));
 		lblNewLabel.setBounds(0, 0, 3029, 2000);
 		contentPane.add(lblNewLabel);
+		
+		table.getSelectionModel().addListSelectionListener(event -> {
+		    int selectedRow = table.getSelectedRow();
+		    if (selectedRow != -1) {
+		        textField.setText(table.getValueAt(selectedRow, 1).toString());
+		        textField_1.setText(table.getValueAt(selectedRow, 3).toString());
+		        textField_2.setText(table.getValueAt(selectedRow, 2).toString());
+		     
+		    }
+		});
+		
+		table_1.getSelectionModel().addListSelectionListener(event -> {
+		    int selectedRow = table_1.getSelectedRow();
+		    if (selectedRow != -1) {
+		        textField_3.setText(table_1.getValueAt(selectedRow, 1).toString());
+		        textField_4.setText(table_1.getValueAt(selectedRow, 3).toString());
+		        textField_5.setText(table_1.getValueAt(selectedRow, 4).toString());
+		        //textField_6.setText(table_1.getValueAt(selectedRow, 2).toString());
+		     
+		    }
+		});
+		
+		
+		
+		
+		loadCustomerData();
+		loadProductData();		
 	}
+	
+	private void loadCustomerData() {
+	    try (Connection con = DatabaseConnection.getConnection()) {
+	        DefaultTableModel model = (DefaultTableModel) table.getModel();
+	        model.setRowCount(0);
+
+	        String query = "SELECT * FROM customer";
+	        try (var ps = con.prepareStatement(query);
+	             var rs = ps.executeQuery()) {
+	            while (rs.next()) {
+	                model.addRow(new Object[]{
+	                    rs.getInt("id"),
+	                    rs.getString("name"),
+	                    rs.getString("email"),
+	                    rs.getString("mobile_number")
+	                });
+	            }
+	        }
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	        JOptionPane.showMessageDialog(this, "Error loading customer data: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+	    }
+	}
+	private void loadProductData() {
+	    try (Connection con = DatabaseConnection.getConnection()) {
+	        DefaultTableModel model = (DefaultTableModel) table_1.getModel();
+	        model.setRowCount(0);
+
+	        String query = "SELECT p.pid, p.pname, p.quantity, p.price, p.description, p.category_id, c.cname "
+	                     + "FROM product p "
+	                     + "INNER JOIN category c ON p.category_id = c.cid";
+	        System.out.println("Executing query: " + query);
+
+	        try (var ps = con.prepareStatement(query);
+	             var rs = ps.executeQuery()) {
+	            while (rs.next()) {
+	                model.addRow(new Object[]{
+	                    rs.getInt("pid"),
+	                    rs.getString("pname"),  
+	                    rs.getInt("quantity"),
+	                    rs.getDouble("price"),
+	                    rs.getString("description"),
+	                    rs.getInt("category_id"),
+	                    rs.getString("cname")
+	                });
+	            }
+	        }
+
+	        System.out.println("Product data loaded successfully.");
+	    } catch (SQLException e) {
+	        System.err.println("SQL error in loadProductData: " + e.getMessage());
+	        e.printStackTrace();
+	    }
+	}
+	private void updateTotalAmount() {
+	    DefaultTableModel model = (DefaultTableModel) table_2.getModel();
+	    double totalAmount = 0.0;
+
+	    for (int i = 0; i < model.getRowCount(); i++) {
+	        totalAmount += (double) model.getValueAt(i, 5); 
+	    }
+
+	    lblNewLabel_7.setText("Total Amount: " + String.format("%.2f", totalAmount));
+	}
+	/*
+	 * public void updateTotalAmount() { double totalAmount = 0.0;
+	 * 
+	 * for (int i = 0; i < table_2.getRowCount(); i++) { Object priceObject =
+	 * table_2.getValueAt(i, 3); // Get price from table Object quantityObject =
+	 * table_2.getValueAt(i, 2); // Get quantity from table
+	 * 
+	 * try { double price = Double.parseDouble(priceObject.toString()); // Ensure
+	 * price is a double int quantity = Integer.parseInt(quantityObject.toString());
+	 * // Ensure quantity is an int totalAmount += price * quantity; // Update total
+	 * amount } catch (NumberFormatException ex) {
+	 * JOptionPane.showMessageDialog(null,
+	 * "Error calculating total amount. Please check input values.", "Error",
+	 * JOptionPane.ERROR_MESSAGE); return; // Exit if there is an issue with parsing
+	 * } }
+	 */
+
+	    // Update the total amount label or field
+		/*
+		 * lblNewLabel_7.setText("Total: " + totalAmount); }
+		 */
+
+	private void resetTextField() {
+		textField_3.setText("");
+		textField_4.setText(""); 
+		textField_5.setText("");
+		textField_6.setText(""); 
+
+	}
+	private int getAvailableQuantityFromDB(String productName) throws SQLException {
+	    int availableQuantity = 0;
+
+	    String query = "SELECT quantity FROM product WHERE pname = ?";
+	    try (Connection con = DatabaseConnection.getConnection();
+	         var ps = con.prepareStatement(query)) {
+	        ps.setString(1, productName);
+	        try (var rs = ps.executeQuery()) {
+	            if (rs.next()) {
+	                availableQuantity = rs.getInt("quantity");
+	            }
+	        }
+	    }
+
+	    return availableQuantity;
+	}
+	private void updateProductQuantityInDB(String productName, int newQuantity) throws SQLException {
+	    String query = "UPDATE product SET quantity = ? WHERE pname = ?";
+	    try (Connection con = DatabaseConnection.getConnection();
+	         var ps = con.prepareStatement(query)) {
+	        ps.setInt(1, newQuantity);
+	        ps.setString(2, productName);
+	        ps.executeUpdate();
+	    }
+	}
+
+	private int getCustomerIdByEmail(String email) {
+	    int customerId = -1;  
+	    try (Connection con = DatabaseConnection.getConnection()) {
+	        String query = "SELECT id FROM customer WHERE email = ?";
+	        try (var ps = con.prepareStatement(query)) {
+	            ps.setString(1, email); 
+	            try (var rs = ps.executeQuery()) {
+	                if (rs.next()) {
+	                    customerId = rs.getInt("id");  
+	                }
+	            }
+	        }
+	    } catch (SQLException ex) {
+	        ex.printStackTrace();
+	        JOptionPane.showMessageDialog(null, "Error retrieving customer ID: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+	    }
+	    return customerId;
+	}
+
+	
+
+
 }
