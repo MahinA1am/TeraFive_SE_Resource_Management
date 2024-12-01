@@ -18,6 +18,8 @@ import javax.swing.JTextField;
 import javax.swing.JButton;
 import javax.swing.ImageIcon;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.sql.Connection;
 import java.awt.event.ActionEvent;
 
@@ -45,7 +47,7 @@ public class ManageCustomer extends JFrame {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					ManageCustomer frame = new ManageCustomer();
+					ManageCustomer frame = new ManageCustomer("","");
 					frame.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -57,8 +59,8 @@ public class ManageCustomer extends JFrame {
 	/**
 	 * Create the frame.
 	 */
-	public ManageCustomer() {
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+	public ManageCustomer(String userEmail,String userRole) {
+		setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 		setBounds(100, 100, 874, 573);
 		contentPane = new JPanel();
 		setLocationRelativeTo(null);
@@ -144,7 +146,7 @@ public class ManageCustomer extends JFrame {
 		btnClose = new JButton("Close");
 		btnClose.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				   HomePage homeFrame = new HomePage("","");
+				   HomePage homeFrame = new HomePage(userEmail,userRole);
 	                homeFrame.setVisible(true);
 	                dispose();
 			}
@@ -192,6 +194,16 @@ public class ManageCustomer extends JFrame {
 		});
 		
 		loadCustomerData();
+		
+		  this.addWindowListener(new WindowAdapter() {
+	            @Override
+	            public void windowClosing(WindowEvent e) {
+	            	  HomePage homeFrame = new HomePage(userEmail,userRole);
+		                homeFrame.setVisible(true);
+		                dispose();
+	               
+	            }
+	        });
 
 
 	}

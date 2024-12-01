@@ -5,12 +5,17 @@ import java.awt.EventQueue;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
+
+
+
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import java.awt.Font;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.awt.event.ActionEvent;
 
 public class HomePage extends JFrame {
@@ -43,7 +48,7 @@ public class HomePage extends JFrame {
 		
 		//System.out.println(userRole);
 		
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 		setBounds(100, 100, 1034, 686);
 		contentPane = new JPanel();
 		
@@ -59,7 +64,7 @@ public class HomePage extends JFrame {
 		JButton btnNewButton = new JButton("User");
 		btnNewButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				 ManageUser userFrame = new ManageUser();
+				 ManageUser userFrame = new ManageUser(userEmail,userRole);
 	                userFrame.setVisible(true);
 	                dispose();
 			}
@@ -74,7 +79,7 @@ public class HomePage extends JFrame {
 		JButton btnNewButton_1 = new JButton("Category");
 		btnNewButton_1.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				 Category categoryFrame = new Category();
+				 Category categoryFrame = new Category(userEmail,userRole);
 	                categoryFrame.setVisible(true);
 	                dispose();
 			}
@@ -88,7 +93,7 @@ public class HomePage extends JFrame {
 		btnNewButton_2.setIcon(new ImageIcon(HomePage.class.getResource("/Images/product.png")));
 		btnNewButton_2.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				 ManageProduct productFrame = new ManageProduct();
+				 ManageProduct productFrame = new ManageProduct(userEmail,userRole);
 	                productFrame.setVisible(true);
 	                dispose();
 			}
@@ -100,7 +105,7 @@ public class HomePage extends JFrame {
 		JButton btnNewButton_3 = new JButton("Customer");
 		btnNewButton_3.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				 ManageCustomer customerFrame = new ManageCustomer();
+				 ManageCustomer customerFrame = new ManageCustomer(userEmail,userRole);
 	                customerFrame.setVisible(true);
 	                dispose();
 			}
@@ -113,7 +118,7 @@ public class HomePage extends JFrame {
 		JButton btnNewButton_4 = new JButton("Order");
 		btnNewButton_4.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				 ManageOrder orderFrame = new ManageOrder();
+				 ManageOrder orderFrame = new ManageOrder(userEmail,userRole);
 	                orderFrame.setVisible(true);
 	                dispose();
 			}
@@ -126,7 +131,7 @@ public class HomePage extends JFrame {
 		JButton btnNewButton_5 = new JButton("View Order");
 		btnNewButton_5.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				 ViewOrder viewOrderFrame = new ViewOrder();
+				 ViewOrder viewOrderFrame = new ViewOrder(userEmail,userRole);
 	                viewOrderFrame.setVisible(true);
 	                dispose();
 			}
@@ -158,5 +163,20 @@ int a= JOptionPane.showConfirmDialog(null,"Do You Want To Log out","Select",JOpt
 		lblNewLabel.setIcon(new ImageIcon(HomePage.class.getResource("/Images/bg.png")));
 		lblNewLabel.setBounds(0, 0, 1024, 1024);
 		contentPane.add(lblNewLabel);
+		
+		this.addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+            	int choice = JOptionPane.showConfirmDialog(HomePage.this, "Do you want to log out?", 
+					    "Log Out", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+
+					if (choice == JOptionPane.YES_OPTION) {
+				new Login().setVisible(true);
+				dispose();
+					}
+
+               
+            }
+        });
 	}
 }

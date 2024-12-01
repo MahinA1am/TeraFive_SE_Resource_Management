@@ -19,6 +19,8 @@ import javax.swing.JComboBox;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.awt.event.ActionEvent;
@@ -43,7 +45,7 @@ public class ManageUser extends JFrame {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					ManageUser frame = new ManageUser();
+					ManageUser frame = new ManageUser("","");
 					frame.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -55,8 +57,8 @@ public class ManageUser extends JFrame {
 	/**
 	 * Create the frame.
 	 */
-	public ManageUser() {
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+	public ManageUser(String userEmail,String userRole) {
+		setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 		setBounds(100, 100, 874, 584);
 		contentPane = new JPanel();
 		
@@ -267,7 +269,7 @@ public class ManageUser extends JFrame {
 		JButton btnClose = new JButton("Close");
 		btnClose.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				   HomePage homeFrame = new HomePage("","");
+				   HomePage homeFrame = new HomePage(userEmail,userRole);
 	                homeFrame.setVisible(true);
 	                dispose();
 			}
@@ -298,6 +300,15 @@ public class ManageUser extends JFrame {
         });
 		
 		loadUserData();
+		this.addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+            	  HomePage homeFrame = new HomePage(userEmail,userRole);
+	                homeFrame.setVisible(true);
+	                dispose();
+               
+            }
+        });
 	}
 	
 	private void loadUserData() {

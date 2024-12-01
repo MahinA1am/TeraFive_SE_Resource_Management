@@ -19,6 +19,8 @@ import javax.swing.JButton;
 import javax.swing.ButtonGroup;
 import javax.swing.ImageIcon;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.awt.event.ActionEvent;
 import javax.swing.JRadioButton;
 
@@ -55,7 +57,7 @@ public class Register extends JFrame {
 	 * Create the frame.
 	 */
 	public Register() {
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 		setBounds(100, 100, 950, 700);
 		contentPane = new JPanel();
 		 setResizable(false); 
@@ -67,13 +69,13 @@ public class Register extends JFrame {
 		
 		JLabel lblRegistrationForm = new JLabel("Registration Form");
 		lblRegistrationForm.setHorizontalAlignment(SwingConstants.CENTER);
-		lblRegistrationForm.setForeground(new Color(255, 255, 0));
+		lblRegistrationForm.setForeground(new Color(0, 0, 0));
 		lblRegistrationForm.setFont(new Font("Tahoma", Font.BOLD, 16));
 		lblRegistrationForm.setBounds(343, 37, 262, 24);
 		contentPane.add(lblRegistrationForm);
 		
 		JLabel lblName = new JLabel("Name");
-		lblName.setForeground(new Color(255, 255, 0));
+		lblName.setForeground(new Color(0, 0, 0));
 		lblName.setFont(new Font("Tahoma", Font.BOLD, 12));
 		lblName.setBounds(343, 77, 46, 14);
 		contentPane.add(lblName);
@@ -85,7 +87,7 @@ public class Register extends JFrame {
 		contentPane.add(textField);
 		
 		JLabel pass = new JLabel("Password");
-		pass.setForeground(new Color(255, 255, 0));
+		pass.setForeground(new Color(0, 0, 0));
 		pass.setFont(new Font("Tahoma", Font.BOLD, 12));
 		pass.setBounds(343, 415, 67, 14);
 		contentPane.add(pass);
@@ -97,7 +99,7 @@ public class Register extends JFrame {
 		contentPane.add(textField_1);
 		
 		JLabel email_1 = new JLabel("Email");
-		email_1.setForeground(new Color(255, 255, 0));
+		email_1.setForeground(new Color(0, 0, 0));
 		email_1.setFont(new Font("Tahoma", Font.BOLD, 12));
 		email_1.setBounds(343, 344, 46, 14);
 		contentPane.add(email_1);
@@ -109,7 +111,7 @@ public class Register extends JFrame {
 		contentPane.add(textField_2);
 		
 		JLabel lblConfirmPassword = new JLabel("Confirm Password");
-		lblConfirmPassword.setForeground(new Color(255, 255, 0));
+		lblConfirmPassword.setForeground(new Color(0, 0, 0));
 		lblConfirmPassword.setFont(new Font("Tahoma", Font.BOLD, 12));
 		lblConfirmPassword.setBounds(343, 481, 123, 14);
 		contentPane.add(lblConfirmPassword);
@@ -127,7 +129,7 @@ public class Register extends JFrame {
 		contentPane.add(btnRegister);
 		
 		JLabel lblPhoneNumber = new JLabel("Phone Number");
-		lblPhoneNumber.setForeground(new Color(255, 255, 0));
+		lblPhoneNumber.setForeground(new Color(0, 0, 0));
 		lblPhoneNumber.setFont(new Font("Tahoma", Font.BOLD, 12));
 		lblPhoneNumber.setBounds(343, 144, 123, 14);
 		contentPane.add(lblPhoneNumber);
@@ -151,7 +153,7 @@ public class Register extends JFrame {
 		contentPane.add(closeButton);
 		
 		JLabel email_1_1 = new JLabel("Country");
-		email_1_1.setForeground(new Color(255, 255, 0));
+		email_1_1.setForeground(new Color(0, 0, 0));
 		email_1_1.setFont(new Font("Tahoma", Font.BOLD, 12));
 		email_1_1.setBounds(343, 215, 100, 14);
 		contentPane.add(email_1_1);
@@ -163,7 +165,7 @@ public class Register extends JFrame {
 		contentPane.add(textField_5);
 		
 		JLabel email_1_2 = new JLabel("Address");
-		email_1_2.setForeground(new Color(255, 255, 0));
+		email_1_2.setForeground(new Color(0, 0, 0));
 		email_1_2.setFont(new Font("Tahoma", Font.BOLD, 12));
 		email_1_2.setBounds(343, 282, 84, 14);
 		contentPane.add(email_1_2);
@@ -175,12 +177,17 @@ public class Register extends JFrame {
 		contentPane.add(textField_6);
 		
 		JRadioButton rdbtnNewRadioButton_1 = new JRadioButton("Female");
+		rdbtnNewRadioButton_1.setForeground(new Color(255, 255, 255));
 		rdbtnNewRadioButton_1.setFont(new Font("Tahoma", Font.BOLD, 12));
+		
+		rdbtnNewRadioButton_1.setBackground(new Color(0, 128, 128));
 		rdbtnNewRadioButton_1.setBounds(495, 555, 109, 23);
 		contentPane.add(rdbtnNewRadioButton_1);
 		
 		JRadioButton rdbtnNewRadioButton = new JRadioButton("Male");
+		rdbtnNewRadioButton.setForeground(new Color(255, 255, 255));
 		rdbtnNewRadioButton.setSelected(true);
+		rdbtnNewRadioButton.setBackground(new Color(0, 128, 128));
 		rdbtnNewRadioButton.setFont(new Font("Tahoma", Font.BOLD, 12));
 		rdbtnNewRadioButton.setBounds(343, 555, 109, 23);
 		contentPane.add(rdbtnNewRadioButton);
@@ -234,6 +241,20 @@ public class Register extends JFrame {
 		        JOptionPane.showMessageDialog(this, "Error during registration.");
 		    }
 		});
+		
+		 this.addWindowListener(new WindowAdapter() {
+	            @Override
+	            public void windowClosing(WindowEvent e) {
+	            	
+
+						
+					new Login().setVisible(true);
+					dispose();
+						
+
+	               
+	            }
+	        });
 
 
 

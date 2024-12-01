@@ -18,6 +18,8 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.JTextField;
 import javax.swing.ImageIcon;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.awt.event.ActionEvent;
@@ -46,7 +48,7 @@ public class ManageOrder extends JFrame {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					ManageOrder frame = new ManageOrder();
+					ManageOrder frame = new ManageOrder("","");
 					frame.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -58,8 +60,8 @@ public class ManageOrder extends JFrame {
 	/**
 	 * Create the frame.
 	 */
-	public ManageOrder() {
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+	public ManageOrder(String userEmail,String userRole) {
+		setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 		setBounds(100, 100, 1195, 800);
 		contentPane = new JPanel();
 		 setLocationRelativeTo(null);
@@ -344,21 +346,16 @@ public class ManageOrder extends JFrame {
 		btnNewButton_1.setBounds(813, 496, 334, 23);
 		contentPane.add(btnNewButton_1);
 		
-		JButton btnNewButton_2 = new JButton("Reset");
-		btnNewButton_2.setFont(new Font("Tahoma", Font.BOLD, 12));
-		btnNewButton_2.setBounds(813, 566, 334, 23);
-		contentPane.add(btnNewButton_2);
-		
 		JButton btnNewButton_3 = new JButton("Close");
 		btnNewButton_3.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				   HomePage homeFrame = new HomePage("","");
+				   HomePage homeFrame = new HomePage(userEmail,userRole);
 	                homeFrame.setVisible(true);
 	                dispose();
 			}
 		});
 		btnNewButton_3.setFont(new Font("Tahoma", Font.BOLD, 12));
-		btnNewButton_3.setBounds(813, 633, 334, 23);
+		btnNewButton_3.setBounds(813, 565, 334, 23);
 		contentPane.add(btnNewButton_3);
 		
 		JLabel lblNewLabel = new JLabel("");
@@ -391,7 +388,17 @@ public class ManageOrder extends JFrame {
 		
 		
 		loadCustomerData();
-		loadProductData();		
+		loadProductData();	
+		
+		 this.addWindowListener(new WindowAdapter() {
+	            @Override
+	            public void windowClosing(WindowEvent e) {
+	            	  HomePage homeFrame = new HomePage(userEmail,userRole);
+		                homeFrame.setVisible(true);
+		                dispose();
+	               
+	            }
+	        });
 	}
 	
 	private void loadCustomerData() {

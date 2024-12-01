@@ -3,6 +3,8 @@ package pro;
 import java.awt.EventQueue;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -44,7 +46,7 @@ public class HomePage extends JFrame {
 		a=userType.equals("admin@gmail.com") ? 1 : 2;
 		
 	
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 		setBounds(100, 100, 1280, 800);
 		contentPane = new JPanel();
 		setResizable(false); 
@@ -174,5 +176,20 @@ public class HomePage extends JFrame {
 		});
 		timer.setRepeats(false); // Only execute once
 		timer.start();
+		
+		 this.addWindowListener(new WindowAdapter() {
+	            @Override
+	            public void windowClosing(WindowEvent e) {
+	            	int choice = JOptionPane.showConfirmDialog(HomePage.this, "Do you want to log out?", 
+						    "Log Out", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+
+						if (choice == JOptionPane.YES_OPTION) {
+					new Login().setVisible(true);
+					dispose();
+						}
+
+	               
+	            }
+	        });
 	}
 }

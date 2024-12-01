@@ -22,6 +22,8 @@ import javax.swing.SwingConstants;
 import javax.swing.JRadioButton;
 import javax.swing.JButton;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.awt.event.ActionEvent;
 
 public class Profile extends JFrame {
@@ -58,7 +60,7 @@ public class Profile extends JFrame {
 	 */
 	public Profile(String userEmail) {
 		newEmail=userEmail;
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 		setBounds(100, 100, 865, 571);
 		contentPane = new JPanel();
 		setResizable(false); 
@@ -227,6 +229,14 @@ public class Profile extends JFrame {
 					lblNewLabel.setBounds(0, 0, 849, 571);
 					contentPane.add(lblNewLabel);
 		loadUserData(userEmail);
+		  this.addWindowListener(new WindowAdapter() {
+	            @Override
+	            public void windowClosing(WindowEvent e) {
+	            	new HomePage(userEmail).setVisible(true);
+	        		dispose();
+	               
+	            }
+	        });
 	}
 	  private void loadUserData(String userEmail) {
 	        try (Connection connection = DatabaseConnection.getConnection()) {

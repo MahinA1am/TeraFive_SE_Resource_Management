@@ -4,6 +4,10 @@ import java.awt.Color;
 import java.awt.EventQueue;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.awt.image.BufferedImage;
+import java.io.File;
 import java.io.FileOutputStream;
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -11,6 +15,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 
 import javax.swing.JButton;
+import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -21,10 +26,14 @@ import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
 
+import org.apache.pdfbox.pdmodel.PDDocument;
+import org.apache.pdfbox.rendering.PDFRenderer;
+
 import com.itextpdf.text.Document;
 import com.itextpdf.text.Font;  // Use the correct iText Font class
 import com.itextpdf.text.Paragraph;
 import com.itextpdf.text.pdf.PdfWriter;
+import javax.swing.ImageIcon;
 
 public class ViewDetails extends JFrame {
 
@@ -46,9 +55,11 @@ public class ViewDetails extends JFrame {
     }
 
     public ViewDetails(String userEmail) {
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
         setBounds(100, 100, 1000, 600);
         contentPane = new JPanel();
+        setResizable(false); 
+		 setLocationRelativeTo(null);
         contentPane.setBackground(new Color(3, 152, 158));
         contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
         setContentPane(contentPane);
@@ -92,6 +103,15 @@ public class ViewDetails extends JFrame {
         contentPane.add(btnClose);
 
         loadBookDetails();
+        
+        this.addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+            	new HomePage(userEmail).setVisible(true);
+        		dispose();
+               
+            }
+        });
     }
 
     private void loadBookDetails() {
@@ -174,9 +194,40 @@ public class ViewDetails extends JFrame {
             document.close();
 
             JOptionPane.showMessageDialog(this, "Row exported successfully to PDF!\nSaved at: " + filePath, "Success", JOptionPane.INFORMATION_MESSAGE);
+
+            // Show the PDF in a popup
+            showPDFInPopup(filePath);
+
         } catch (Exception ex) {
             ex.printStackTrace();
             JOptionPane.showMessageDialog(this, "Error exporting to PDF: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
+
+    private void showPDFInPopup(String filePath) {
+        JDialog pdfDialog = new JDialog(this, "PDF Preview", true); // Modal dialog
+        pdfDialog.setSize(800, 600);
+        pdfDialog.setLocationRelativeTo(null);
+
+        try {
+            // Load PDF with PDFBox
+            PDDocument pdfDocument = PDDocument.load(new File(filePath));
+            PDFRenderer renderer = new PDFRenderer(pdfDocument);
+
+            // Render the first page of the PDF as an image
+            BufferedImage pageImage = renderer.renderImageWithDPI(0, 150); // First page, 150 DPI
+
+            // Display the image in a JLabel
+            JLabel pdfLabel = new JLabel(new ImageIcon(pageImage));
+            JScrollPane scrollPane = new JScrollPane(pdfLabel); // Add scroll if PDF is large
+            pdfDialog.add(scrollPane);
+
+            pdfDialog.setVisible(true); // Show the dialog
+            pdfDocument.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(this, "Failed to load PDF for preview: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
 }

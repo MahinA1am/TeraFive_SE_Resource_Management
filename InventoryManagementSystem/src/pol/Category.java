@@ -8,6 +8,8 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
+
+
 import java.awt.Font;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -18,6 +20,8 @@ import javax.swing.JTextField;
 import javax.swing.JButton;
 import javax.swing.ImageIcon;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -45,7 +49,7 @@ public class Category extends JFrame {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					Category frame = new Category();
+					Category frame = new Category("","");
 					frame.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -57,8 +61,8 @@ public class Category extends JFrame {
 	/**
 	 * Create the frame.
 	 */
-	public Category() {
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+	public Category(String userEmail,String userRole) {
+		setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 		setBounds(100, 100, 873, 579);
 		contentPane = new JPanel();
 		setLocationRelativeTo(null);
@@ -198,7 +202,7 @@ public class Category extends JFrame {
 		btnClose = new JButton("Close");
 		btnClose.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				   HomePage homeFrame = new HomePage("","");
+				   HomePage homeFrame = new HomePage(userEmail,userRole);
 	                homeFrame.setVisible(true);
 	                dispose();
 			}
@@ -225,6 +229,15 @@ public class Category extends JFrame {
 		
 
 		loadTableData();
+		  this.addWindowListener(new WindowAdapter() {
+	            @Override
+	            public void windowClosing(WindowEvent e) {
+	            	  HomePage homeFrame = new HomePage(userEmail,userRole);
+		                homeFrame.setVisible(true);
+		                dispose();
+	               
+	            }
+	        });
 	}
 	private void loadTableData() {
 	    DefaultTableModel model = (DefaultTableModel) table.getModel();

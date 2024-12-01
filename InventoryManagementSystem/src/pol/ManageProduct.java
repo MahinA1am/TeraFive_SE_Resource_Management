@@ -24,6 +24,8 @@ import javax.swing.JButton;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.ImageIcon;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.awt.event.ActionEvent;
 
 public class ManageProduct extends JFrame {
@@ -44,7 +46,7 @@ public class ManageProduct extends JFrame {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					ManageProduct frame = new ManageProduct();
+					ManageProduct frame = new ManageProduct("","");
 					frame.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -56,8 +58,8 @@ public class ManageProduct extends JFrame {
 	/**
 	 * Create the frame.
 	 */
-	public ManageProduct() {
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+	public ManageProduct(String userEmail,String userRole) {
+		setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 		setBounds(100, 100, 876, 579);
 		contentPane = new JPanel();
 		setLocationRelativeTo(null);
@@ -193,7 +195,9 @@ public class ManageProduct extends JFrame {
 		JButton btnClose = new JButton("Close");
 		btnClose.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				dispose();
+				HomePage homeFrame = new HomePage(userEmail,userRole);
+                homeFrame.setVisible(true);
+                dispose();
 			}
 		});
 		btnClose.setFont(new Font("Tahoma", Font.BOLD, 12));
@@ -226,6 +230,16 @@ public class ManageProduct extends JFrame {
 		        }
 		    }
 		});
+		
+		 this.addWindowListener(new WindowAdapter() {
+	            @Override
+	            public void windowClosing(WindowEvent e) {
+	            	  HomePage homeFrame = new HomePage(userEmail,userRole);
+		                homeFrame.setVisible(true);
+		                dispose();
+	               
+	            }
+	        });
 		
 
 	}

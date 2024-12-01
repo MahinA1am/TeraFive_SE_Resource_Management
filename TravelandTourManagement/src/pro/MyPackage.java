@@ -18,6 +18,8 @@ import javax.swing.SwingConstants;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.awt.event.ActionEvent;
 
 public class MyPackage extends JFrame {
@@ -47,7 +49,7 @@ public class MyPackage extends JFrame {
 	 * Create the frame.
 	 */
 	public MyPackage(String userEmail) {
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
         setBounds(100, 100, 865, 569);
         contentPane = new JPanel();
         setResizable(false); 
@@ -179,7 +181,16 @@ public class MyPackage extends JFrame {
 
         // Load booking details
         loadBookingDetails(userEmail);
-        loadPackagesAndHotels();    
+        loadPackagesAndHotels();   
+        
+        this.addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+            	new HomePage(userEmail).setVisible(true);
+        		dispose();
+               
+            }
+        });
         }
 
     private void loadBookingDetails(String userEmail) {

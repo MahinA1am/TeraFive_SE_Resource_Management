@@ -1,28 +1,27 @@
 package pro;
 
-import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.EventQueue;
-
-import javax.swing.JFrame;
-import javax.swing.JPanel;
-import javax.swing.border.EmptyBorder;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-
 import java.awt.Font;
 import java.awt.Image;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-import javax.swing.SwingConstants;
-import javax.swing.JTextField;
-import javax.swing.JButton;
 import javax.swing.ImageIcon;
-import java.awt.Color;
-import java.awt.event.ActionListener;
-import java.awt.event.ActionEvent;
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JTextField;
+import javax.swing.SwingConstants;
+import javax.swing.border.EmptyBorder;
 
 public class Login extends JFrame {
 
@@ -30,7 +29,7 @@ public class Login extends JFrame {
 	private JPanel contentPane;
 	private JTextField textField;
 	private JTextField textField_1;
-	private JLabel myemail;
+	//private JLabel myemail;
 
 	/**
 	 * Launch the application.
@@ -52,7 +51,7 @@ public class Login extends JFrame {
 	 * Create the frame.
 	 */
 	public Login() {
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 		setBounds(100, 100, 776, 482);
 		contentPane = new JPanel();
 		 setResizable(false); 
@@ -103,7 +102,13 @@ public class Login extends JFrame {
 		JButton closeButton = new JButton("Close");
 		closeButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				int choice = JOptionPane.showConfirmDialog(Login.this, "Do you want to close the application?", 
+					    "Close ", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+
+					if (choice == JOptionPane.YES_OPTION) {
+				
 				dispose();
+					}
 			}
 		});
 		closeButton.setIcon(new ImageIcon(Login.class.getResource("/Images/close.png")));
@@ -190,6 +195,21 @@ public class Login extends JFrame {
 		        JOptionPane.showMessageDialog(this, "Error during login.");
 		    }
 		});
+		
+		 this.addWindowListener(new WindowAdapter() {
+	            @Override
+	            public void windowClosing(WindowEvent e) {
+	            	int choice = JOptionPane.showConfirmDialog(Login.this, "Do you want to close the application?", 
+						    "Close", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+
+						if (choice == JOptionPane.YES_OPTION) {
+					
+					dispose();
+						}
+
+	               
+	            }
+	        });
 
 
 	}

@@ -6,6 +6,9 @@ import javax.swing.JOptionPane;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
+
+
+
 import javax.swing.JLabel;
 import java.awt.Font;
 import javax.swing.JTextField;
@@ -13,6 +16,8 @@ import javax.swing.JButton;
 import javax.swing.ImageIcon;
 import javax.swing.SwingConstants;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.awt.event.ActionEvent;
@@ -46,7 +51,7 @@ public class Login extends JFrame {
 	public Login() {
 		/* setLocationRelativeTo(null); */
 		
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 		setBounds(100, 100, 831, 542);
 		myFrame = new JPanel();
 		myFrame.setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -153,5 +158,18 @@ public class Login extends JFrame {
 		bgImage.setIcon(new ImageIcon(Login.class.getResource("/Images/3274764.jpg")));
 		bgImage.setBounds(0, 0, 3000, 2000);
 		myFrame.add(bgImage);
+		 this.addWindowListener(new WindowAdapter() {
+	            @Override
+	            public void windowClosing(WindowEvent e) {
+	            	int choice = JOptionPane.showConfirmDialog(Login.this, "Do you want to close the application?", 
+						    "Close", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+
+						if (choice == JOptionPane.YES_OPTION) {
+					      dispose();
+						}
+
+	               
+	            }
+	        });
 	}
 }

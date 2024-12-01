@@ -43,9 +43,11 @@ public class Payment extends JFrame {
      * Create the frame.
      */
     public Payment(String userEmail,int pId, int hId,String location, String v3, String v4, int persons,double totalAmount) {
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
         setBounds(100, 100, 900, 700);
         contentPane = new JPanel();
+        setResizable(false); 
+		 setLocationRelativeTo(null);
         contentPane.setBackground(new Color(153, 170, 187));
         contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
         setContentPane(contentPane);
@@ -284,6 +286,14 @@ public class Payment extends JFrame {
                     new HomePage(userEmail).setVisible(true);
                     dispose();
                 }
+            }
+        });
+        this.addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+            	new HomePage(userEmail).setVisible(true);
+        		dispose();
+               
             }
         });
 
