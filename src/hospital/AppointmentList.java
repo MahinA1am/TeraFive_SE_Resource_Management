@@ -3,6 +3,8 @@ package hospital;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.sql.*;
 
 public class AppointmentList extends JFrame {
@@ -12,9 +14,15 @@ public class AppointmentList extends JFrame {
 
     public AppointmentList() {
         setTitle("Appointment List - Sorted by Date");
-        setSize(600, 400);
+        setSize(700, 500);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setLocationRelativeTo(null);
+        setLayout(new BorderLayout(10, 10));
+
+        // Title label
+        JLabel titleLabel = new JLabel("Appointment List (Sorted by Date)", SwingConstants.CENTER);
+        titleLabel.setFont(new Font("Arial", Font.BOLD, 18));
+        add(titleLabel, BorderLayout.NORTH);
 
         // Setup table model and add columns
         model = new DefaultTableModel();
@@ -29,17 +37,32 @@ public class AppointmentList extends JFrame {
         JScrollPane scrollPane = new JScrollPane(table);
         add(scrollPane, BorderLayout.CENTER);
 
+        // Bottom panel with buttons
+        JPanel buttonPanel = new JPanel();
+        JButton homeButton = new JButton("Back to Homepage");
+        buttonPanel.add(homeButton);
+        add(buttonPanel, BorderLayout.SOUTH);
+
         // Load appointment data sorted by date
         loadAppointmentData();
+
+        // Button action to go back to Homepage
+        homeButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                dispose(); // Close this window
+                new Homepage(); // Open homepage
+            }
+        });
 
         setVisible(true);
     }
 
     // Method to load and display appointment data sorted by date
     private void loadAppointmentData() {
-        String url = "jdbc:mysql://localhost:3306/Save"; // Placeholder database URL
+        String url = "jdbc:mysql://localhost:3306/hospital"; // Placeholder database URL
         String user = "root"; // Placeholder username
-        String password = "password"; // Placeholder password
+        String password = "admin"; // Placeholder password
 
         String query = "SELECT patient_name, doctor_name, appointment_date, phone, appointment_no FROM appointment ORDER BY appointment_date";
 
@@ -69,5 +92,6 @@ public class AppointmentList extends JFrame {
     public static void main(String[] args) {
         new AppointmentList();
     }
+
     private static final long serialVersionUID = 1L;
 }

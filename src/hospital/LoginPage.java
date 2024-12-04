@@ -4,23 +4,30 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 
 public class LoginPage extends JFrame {
 
-    // Predefined username and password for demo purposes
-    private final String USERNAME = "admin";
-    private final String PASSWORD = "password123";
+    // Database credentials
+    private static final String DB_URL = "jdbc:mysql://localhost:3306/hospital"; // Replace with your DB URL
+    private static final String DB_USERNAME = "root"; // Database username
+    private static final String DB_PASSWORD = "admin"; // Database password
 
     // Constructor for LoginPage
     public LoginPage() {
-        // Set the title of the JFrame
+        // Set the title and default settings for the JFrame
         setTitle("Login Page");
-        setSize(400, 300); // Set size of the window
+        setSize(600, 400); // Adjusted size for background image
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null); // Center the window
 
-        // Create a panel with a grid layout for alignment
-        JPanel panel = new JPanel(new GridBagLayout());
+        // Load background image
+        JLabel backgroundLabel = new JLabel(new ImageIcon("path_to_background_image.jpg"));
+        backgroundLabel.setLayout(new GridBagLayout()); // Use GridBagLayout for overlaying components
+
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.insets = new Insets(10, 10, 10, 10); // Padding between components
 
@@ -38,16 +45,16 @@ public class LoginPage extends JFrame {
 
         // Align components in grid layout
         gbc.gridx = 0; gbc.gridy = 0;
-        panel.add(userLabel, gbc);
+        backgroundLabel.add(userLabel, gbc);
 
         gbc.gridx = 1; gbc.gridy = 0;
-        panel.add(userTextField, gbc);
+        backgroundLabel.add(userTextField, gbc);
 
         gbc.gridx = 0; gbc.gridy = 1;
-        panel.add(passwordLabel, gbc);
+        backgroundLabel.add(passwordLabel, gbc);
 
         gbc.gridx = 1; gbc.gridy = 1;
-        panel.add(passwordField, gbc);
+        backgroundLabel.add(passwordField, gbc);
 
         // Buttons are in the next row, center-aligned
         gbc.gridx = 0; gbc.gridy = 2;
@@ -58,10 +65,10 @@ public class LoginPage extends JFrame {
         buttonPanel.add(loginButton);
         buttonPanel.add(registerButton);
         buttonPanel.add(clearButton);
-        panel.add(buttonPanel, gbc);
+        backgroundLabel.add(buttonPanel, gbc);
 
-        // Add the panel to the frame
-        add(panel);
+        // Add the backgroundLabel to the frame
+        add(backgroundLabel);
 
         // Make the frame visible
         setVisible(true);
@@ -72,8 +79,8 @@ public class LoginPage extends JFrame {
                 String username = userTextField.getText();
                 String password = String.valueOf(passwordField.getPassword());
 
-                // Check if the entered credentials match
-                if (USERNAME.equals(username) && PASSWORD.equals(password)) {
+                // Validate credentials via the database
+                if (validateCredentials(username, password)) {
                     JOptionPane.showMessageDialog(null, "Login Successful!");
                     // Open the Homepage window
                     new Homepage();
@@ -86,8 +93,8 @@ public class LoginPage extends JFrame {
 
         registerButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                //JOptionPane.showMessageDialog(null, "Redirecting to Registration Page");
-            	new RegistrationForm();
+                // Redirect to Registration Form
+                new RegistrationForm();
             }
         });
 
@@ -99,10 +106,26 @@ public class LoginPage extends JFrame {
         });
     }
 
+    // Method to validate credentials against the database
+    private boolean validateCredentials(String username, String password) {
+        try (Connection conn = DriverManager.getConnection(DB_URL, DB_USERNAME, DB_PASSWORD)) {
+            String query = "SELECT * FROM admin WHERE username = ? AND password = ?";
+            PreparedStatement pstmt = conn.prepareStatement(query);
+            pstmt.setString(1, username);
+            pstmt.setString(2, password);
+
+            ResultSet rs = pstmt.executeQuery();
+            return rs.next(); // Return true if a matching record is found
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(null, "Database Error: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            return false;
+        }
+    }
+
     // Main method to run the application
     public static void main(String[] args) {
-        new LoginPage();
+        SwingUtilities.invokeLater(() -> new LoginPage());
     }
+
     private static final long serialVersionUID = 1L;
 }
-

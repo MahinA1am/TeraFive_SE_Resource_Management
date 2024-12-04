@@ -40,9 +40,9 @@ public class RemovePatient extends JFrame {
 
     // Method to remove patient information from the database
     private void removePatientFromDatabase() {
-        String url = "jdbc:mysql://localhost:3306/Save"; // Placeholder database URL
+        String url = "jdbc:mysql://localhost:3306/hospital"; // Placeholder database URL
         String user = "root"; // Placeholder username
-        String password = "password"; // Placeholder password
+        String password = "admin"; // Placeholder password
 
         String name = nameField.getText();
         String phone = phoneField.getText();

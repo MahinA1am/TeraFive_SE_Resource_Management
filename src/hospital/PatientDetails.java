@@ -13,11 +13,11 @@ public class PatientDetails extends JFrame {
     public PatientDetails() {
         setTitle("Patient Details");
         setSize(800, 400);
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE); // Close only this window
         setLocationRelativeTo(null);
 
         // Set up the table with column headers
-        String[] columnNames = {"Name", "Consulted Doctor", "Disease Details", "Phone No", "Last Visited Date"};
+        String[] columnNames = {"Name", "Consulted Doctor", "Disease Details", "Phone No", "Blood Group"};
         tableModel = new DefaultTableModel(columnNames, 0);
         patientTable = new JTable(tableModel);
 
@@ -33,10 +33,10 @@ public class PatientDetails extends JFrame {
 
     // Method to fetch patient data from the database and add it to the table model
     private void fetchPatientData() {
-        String url = "jdbc:mysql://localhost:3306/Save"; // Placeholder database URL
-        String user = "root"; // Placeholder username
-        String password = "password"; // Placeholder password
-        String query = "SELECT name, consulted_doctor, disease_details, phone_no, last_visited_date FROM patient";
+        String url = "jdbc:mysql://localhost:3306/Save"; // Replace with actual database URL
+        String user = "root"; // Replace with actual username
+        String password = "password"; // Replace with actual password
+        String query = "SELECT name, consulted_doctor, disease_details, phone_no, blood_group FROM patient";
 
         try (Connection con = DriverManager.getConnection(url, user, password);
              Statement stmt = con.createStatement();
@@ -48,10 +48,10 @@ public class PatientDetails extends JFrame {
                 String consultedDoctor = rs.getString("consulted_doctor");
                 String diseaseDetails = rs.getString("disease_details");
                 String phoneNo = rs.getString("phone_no");
-                String lastVisitedDate = rs.getString("last_visited_date");
+                String bloodGroup = rs.getString("blood_group");
 
                 // Add each row to the table model
-                tableModel.addRow(new Object[]{name, consultedDoctor, diseaseDetails, phoneNo, lastVisitedDate});
+                tableModel.addRow(new Object[]{name, consultedDoctor, diseaseDetails, phoneNo, bloodGroup});
             }
         } catch (SQLException ex) {
             ex.printStackTrace();
@@ -63,5 +63,6 @@ public class PatientDetails extends JFrame {
     public static void main(String[] args) {
         new PatientDetails();
     }
+
     private static final long serialVersionUID = 1L;
 }

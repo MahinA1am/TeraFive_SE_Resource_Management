@@ -14,36 +14,80 @@ public class AppointmentForm extends JFrame {
     private JTextField appointmentDateField;
 
     public AppointmentForm() {
+        // Set title and window properties
         setTitle("Appointment Form");
-        setSize(400, 300);
+        setSize(800, 600);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setLocationRelativeTo(null);
-        setLayout(new GridLayout(6, 2, 10, 10));
+        setLayout(new BorderLayout(10, 10));
 
-        // Create form components
-        add(new JLabel("Patient Name:"));
-        patientNameField = new JTextField();
-        add(patientNameField);
+        // Title Label
+        JLabel titleLabel = new JLabel("Book an Appointment", SwingConstants.CENTER);
+        titleLabel.setFont(new Font("Arial", Font.BOLD, 24));
+        add(titleLabel, BorderLayout.NORTH);
 
-        add(new JLabel("Doctor Name:"));
-        doctorNameField = new JTextField();
-        add(doctorNameField);
+        // Form Panel
+        JPanel formPanel = new JPanel(new GridBagLayout());
+        formPanel.setBorder(BorderFactory.createEmptyBorder(20, 40, 20, 40));
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.insets = new Insets(10, 10, 10, 10);
+        gbc.fill = GridBagConstraints.HORIZONTAL;
 
-        add(new JLabel("Appointment Date (YYYY-MM-DD):"));
-        appointmentDateField = new JTextField(LocalDate.now().toString()); // Defaults to today’s date
-        add(appointmentDateField);
+        // Row 1: Patient Name
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        formPanel.add(new JLabel("Patient Name:"), gbc);
+        gbc.gridx = 1;
+        patientNameField = new JTextField(20);
+        formPanel.add(patientNameField, gbc);
 
-        add(new JLabel("Patient Phone No:"));
-        phoneField = new JTextField();
-        add(phoneField);
+        // Row 2: Doctor Name
+        gbc.gridx = 0;
+        gbc.gridy = 1;
+        formPanel.add(new JLabel("Doctor Name:"), gbc);
+        gbc.gridx = 1;
+        doctorNameField = new JTextField(20);
+        formPanel.add(doctorNameField, gbc);
 
-        add(new JLabel("Appointment No:"));
+        // Row 3: Appointment Date
+        gbc.gridx = 0;
+        gbc.gridy = 2;
+        formPanel.add(new JLabel("Appointment Date (YYYY-MM-DD):"), gbc);
+        gbc.gridx = 1;
+        appointmentDateField = new JTextField(LocalDate.now().toString());
+        formPanel.add(appointmentDateField, gbc);
+
+        // Row 4: Phone Number
+        gbc.gridx = 0;
+        gbc.gridy = 3;
+        formPanel.add(new JLabel("Patient Phone No:"), gbc);
+        gbc.gridx = 1;
+        phoneField = new JTextField(20);
+        formPanel.add(phoneField, gbc);
+
+        // Row 5: Appointment No
+        gbc.gridx = 0;
+        gbc.gridy = 4;
+        formPanel.add(new JLabel("Appointment No:"), gbc);
+        gbc.gridx = 1;
         appointmentNoField = new JTextField(generateRandomString());
-        appointmentNoField.setEditable(false); // Read-only field
-        add(appointmentNoField);
+        appointmentNoField.setEditable(false);
+        formPanel.add(appointmentNoField, gbc);
 
+        add(formPanel, BorderLayout.CENTER);
+
+        // Buttons Panel
+        JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 10));
         JButton saveButton = new JButton("Save");
-        add(saveButton);
+        JButton clearButton = new JButton("Clear");
+        JButton backButton = new JButton("Back to Homepage");
+
+        buttonPanel.add(saveButton);
+        buttonPanel.add(clearButton);
+        buttonPanel.add(backButton);
+        add(buttonPanel, BorderLayout.SOUTH);
+
+        // Button Actions
         saveButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -51,12 +95,18 @@ public class AppointmentForm extends JFrame {
             }
         });
 
-        JButton clearButton = new JButton("Clear");
-        add(clearButton);
         clearButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 clearFields();
+            }
+        });
+
+        backButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                dispose();
+                new Homepage();
             }
         });
 
@@ -71,9 +121,9 @@ public class AppointmentForm extends JFrame {
             return;
         }
 
-        String url = "jdbc:mysql://localhost:3306/Save"; // Placeholder database URL
+        String url = "jdbc:mysql://localhost:3306/hospital"; // Placeholder database URL
         String user = "root"; // Placeholder username
-        String password = "password"; // Placeholder password
+        String password = "admin"; // Placeholder password
 
         String patientName = patientNameField.getText();
         String doctorName = doctorNameField.getText();
@@ -129,5 +179,6 @@ public class AppointmentForm extends JFrame {
     public static void main(String[] args) {
         new AppointmentForm();
     }
+
     private static final long serialVersionUID = 1L;
 }

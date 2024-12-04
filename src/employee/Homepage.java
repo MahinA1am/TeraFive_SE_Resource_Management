@@ -115,7 +115,7 @@ public class Homepage extends JFrame {
         infoArea.setText("Employees in " + department + " Department:\n");
         String url = "jdbc:mysql://localhost:3306/Save"; // Placeholder database URL
         String user = "root"; // Placeholder username
-        String pass = "password"; // Placeholder password
+        String pass = "1234"; // Placeholder password
 
         String query = "SELECT name, username, age FROM employee WHERE department = ?";
 

@@ -11,10 +11,18 @@ public class RegistrationForm extends JFrame {
     // Constructor for RegistrationForm
     public RegistrationForm() {
         // Set the title of the JFrame
-        setTitle("Registration Form");
+        setTitle("Admin Registration Form");
         setSize(400, 400); // Set the size of the window
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE); // Dispose window on close
         setLocationRelativeTo(null); // Center the window
+
+        // Add a WindowListener to reopen the LoginPage when the form is closed
+        addWindowListener(new java.awt.event.WindowAdapter() {
+            @Override
+            public void windowClosed(java.awt.event.WindowEvent e) {
+                new LoginPage(); // Reopen LoginPage
+            }
+        });
 
         // Create a panel with a grid layout for alignment
         JPanel panel = new JPanel(new GridBagLayout());
@@ -109,22 +117,17 @@ public class RegistrationForm extends JFrame {
         });
     }
 
-    // Method to save registration details to a database (Placeholder)
+    // Method to save registration details to the database
     private void saveToDatabase(String name, String username, String password, String age, String dob, String phone) {
-        // Placeholder database connection details
-        String url = "jdbc:mysql://localhost:3306/Save"; // Replace with actual database URL
-        String user = "root"; // Replace with actual database username
-        String pass = "password"; // Replace with actual database password
+        String url = "jdbc:mysql://localhost:3306/hospital";
+        String user = "root";
+        String pass = "admin";
 
-        // SQL query to insert data
-        String query = "INSERT INTO users (name, username, password, age, dob, phone) VALUES (?, ?, ?, ?, ?, ?)";
+        String query = "INSERT INTO admin (name, username, password, age, dob, phone) VALUES (?, ?, ?, ?, ?, ?)";
 
-        try {
-            // Establish connection to the database
-            Connection con = DriverManager.getConnection(url, user, pass);
+        try (Connection con = DriverManager.getConnection(url, user, pass);
+             PreparedStatement stmt = con.prepareStatement(query)) {
 
-            // Prepare the statement with the query
-            PreparedStatement stmt = con.prepareStatement(query);
             stmt.setString(1, name);
             stmt.setString(2, username);
             stmt.setString(3, password);
@@ -132,15 +135,12 @@ public class RegistrationForm extends JFrame {
             stmt.setString(5, dob);
             stmt.setString(6, phone);
 
-            // Execute the query to insert data
             int rowsInserted = stmt.executeUpdate();
             if (rowsInserted > 0) {
                 JOptionPane.showMessageDialog(null, "Registration Successful!");
+                dispose(); // Close RegistrationForm
+                new LoginPage(); // Reopen LoginPage
             }
-
-            // Close the connection
-            stmt.close();
-            con.close();
         } catch (SQLException ex) {
             ex.printStackTrace();
             JOptionPane.showMessageDialog(null, "Error: Could not connect to database", "Error", JOptionPane.ERROR_MESSAGE);
@@ -153,4 +153,3 @@ public class RegistrationForm extends JFrame {
     }
     private static final long serialVersionUID = 1L;
 }
-

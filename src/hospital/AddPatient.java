@@ -12,34 +12,61 @@ public class AddPatient extends JFrame {
 
     public AddPatient() {
         setTitle("Add Patient");
-        setSize(400, 300);
+        setSize(500, 400);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setLocationRelativeTo(null);
-        setLayout(new GridLayout(6, 2, 10, 10));
 
-        // Create and add form components
-        add(new JLabel("Name:"));
-        nameField = new JTextField();
-        add(nameField);
+        // Set background image
+        JLabel background = new JLabel(new ImageIcon("path/to/your/background.jpg"));
+        background.setLayout(new GridBagLayout()); // Use GridBagLayout for layering components
+        setContentPane(background);
 
-        add(new JLabel("Consulted Doctor:"));
-        doctorField = new JTextField();
-        add(doctorField);
+        // Create a transparent panel for form components
+        JPanel panel = new JPanel(new GridBagLayout());
+        panel.setOpaque(false); // Make panel background transparent
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.insets = new Insets(10, 10, 10, 10); // Padding between components
 
-        add(new JLabel("Disease Details:"));
-        diseaseField = new JTextField();
-        add(diseaseField);
+        // Form Components
+        JLabel nameLabel = new JLabel("Name:");
+        nameField = new JTextField(15);
 
-        add(new JLabel("Phone No:"));
-        phoneField = new JTextField();
-        add(phoneField);
+        JLabel doctorLabel = new JLabel("Consulted Doctor:");
+        doctorField = new JTextField(15);
 
-        add(new JLabel("Blood Group:"));
-        bloodGroupField = new JTextField();
-        add(bloodGroupField);
+        JLabel diseaseLabel = new JLabel("Disease Details:");
+        diseaseField = new JTextField(15);
+
+        JLabel phoneLabel = new JLabel("Phone No:");
+        phoneField = new JTextField(15);
+
+        JLabel bloodGroupLabel = new JLabel("Blood Group:");
+        bloodGroupField = new JTextField(15);
 
         JButton addButton = new JButton("Add Patient");
-        add(addButton);
+
+        // Add components to panel
+        gbc.gridx = 0; gbc.gridy = 0; panel.add(nameLabel, gbc);
+        gbc.gridx = 1; panel.add(nameField, gbc);
+
+        gbc.gridx = 0; gbc.gridy = 1; panel.add(doctorLabel, gbc);
+        gbc.gridx = 1; panel.add(doctorField, gbc);
+
+        gbc.gridx = 0; gbc.gridy = 2; panel.add(diseaseLabel, gbc);
+        gbc.gridx = 1; panel.add(diseaseField, gbc);
+
+        gbc.gridx = 0; gbc.gridy = 3; panel.add(phoneLabel, gbc);
+        gbc.gridx = 1; panel.add(phoneField, gbc);
+
+        gbc.gridx = 0; gbc.gridy = 4; panel.add(bloodGroupLabel, gbc);
+        gbc.gridx = 1; panel.add(bloodGroupField, gbc);
+
+        gbc.gridx = 0; gbc.gridy = 5; gbc.gridwidth = 2; panel.add(addButton, gbc);
+
+        // Add panel to the background
+        background.add(panel);
+
+        // Action Listener for Add Button
         addButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -52,9 +79,9 @@ public class AddPatient extends JFrame {
 
     // Method to add patient information to the database
     private void addPatientToDatabase() {
-        String url = "jdbc:mysql://localhost:3306/Save"; // Placeholder database URL
-        String user = "root"; // Placeholder username
-        String password = "password"; // Placeholder password
+        String url = "jdbc:mysql://localhost:3306/hospital"; // Replace with actual database URL
+        String user = "root"; // Replace with actual database username
+        String password = "admin"; // Replace with actual database password
 
         String name = nameField.getText();
         String doctor = doctorField.getText();

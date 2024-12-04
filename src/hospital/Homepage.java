@@ -1,6 +1,7 @@
 package hospital;
 
 import javax.swing.*;
+//import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -13,6 +14,16 @@ public class Homepage extends JFrame {
         setSize(800, 600); // Set size of the window
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null); // Center the window
+
+        // Create a layered pane for background image and components
+        JLayeredPane layeredPane = new JLayeredPane();
+        layeredPane.setBounds(0, 0, 800, 600);
+
+        // Set background image
+        ImageIcon backgroundIcon = new ImageIcon("src/resources/background.jpg"); // Path to your background image
+        JLabel backgroundLabel = new JLabel(backgroundIcon);
+        backgroundLabel.setBounds(0, 0, 800, 600);
+        layeredPane.add(backgroundLabel, Integer.valueOf(0));
 
         // Create a menubar
         JMenuBar menuBar = new JMenuBar();
@@ -45,15 +56,21 @@ public class Homepage extends JFrame {
         JMenu scheduleMenu = new JMenu("Schedule");
         menuBar.add(scheduleMenu);
 
-        // Blood Bank Menu
-        JMenu bloodBankMenu = new JMenu("Blood Bank");
-        menuBar.add(bloodBankMenu);
+        // Blood Menu with sub-menu items
+        JMenu bloodMenu = new JMenu("Blood");
+        JMenuItem addBlood = new JMenuItem("Add Blood");
+        JMenuItem bloodDetails = new JMenuItem("Blood Details");
+        bloodMenu.add(addBlood);
+        bloodMenu.add(bloodDetails);
+        menuBar.add(bloodMenu);
 
         // Add the menubar to the frame
         setJMenuBar(menuBar);
 
-        // Set layout and visibility
-        setLayout(null);
+        // Add the layered pane to the frame
+        add(layeredPane);
+
+        // Set visibility
         setVisible(true);
 
         // Add action listeners for the menu items
@@ -96,6 +113,22 @@ public class Homepage extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 new AppointmentList(); // Open Appointment List window
+            }
+        });
+
+        // Add Blood Menu Item Action
+        addBlood.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                new AddBloodForm(); // Open Add Blood form
+            }
+        });
+
+        // Blood Details Menu Item Action
+        bloodDetails.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                new BloodDetailsForm(); // Open Blood Details form
             }
         });
     }
