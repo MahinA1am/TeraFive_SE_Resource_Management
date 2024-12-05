@@ -112,9 +112,9 @@ public class RegistrationForm extends JFrame {
     // Method to save registration details to a database (Placeholder)
     private void saveToDatabase(String name, String username, String password, String age, String dob, String phone) {
         // Placeholder database connection details
-        String url = "jdbc:mysql://localhost:3306/Save"; // Replace with actual database URL
+        String url = "jdbc:mysql://localhost:3306/employee"; // Replace with actual database URL
         String user = "root"; // Replace with actual database username
-        String pass = "password"; // Replace with actual database password
+        String pass = "admin"; // Replace with actual database password
 
         // SQL query to insert data
         String query = "INSERT INTO users (name, username, password, age, dob, phone) VALUES (?, ?, ?, ?, ?, ?)";

@@ -12,7 +12,7 @@ public class RemovePatient extends JFrame {
 
     public RemovePatient() {
         setTitle("Remove Patient");
-        setSize(400, 200);
+        setSize(600, 400);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setLocationRelativeTo(null);
         setLayout(new GridLayout(3, 2, 10, 10));
