@@ -60,10 +60,3 @@ Contributions are welcome! Feel free to fork this repository and submit pull req
 
 This project is open-source and available under the [MIT License](LICENSE).
 
-## Contact
-
-For any questions or support, please open an issue or contact the repository owner.
-
----
-
-Feel free to modify this as needed to match the specific details of your project!
