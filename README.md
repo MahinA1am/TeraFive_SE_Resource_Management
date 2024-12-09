@@ -1,4 +1,4 @@
-Here’s a detailed `README.md` for your Java project using Eclipse and Swing. This guide will take users from setting up the necessary tools to running your project in Eclipse.
+Here’s a detailed `README.md
 
 ---
 
