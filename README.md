@@ -144,4 +144,4 @@ Feel free to reach out with any issues or questions. Enjoy exploring and enhanci
 
 --- 
 
-This README should cover all the necessary steps to get your project up and running in Eclipse. Let me know if you need any more details!
+This README should cover all the necessary steps to get this project up and running in Eclipse.
