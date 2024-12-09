@@ -2,9 +2,9 @@ package main;
 
 
 import hospital.LoginPage ;
-//import inventory.LoginPage as InventoryLoginPage;
+import pol.Login ;
 import employee.LoginForm ;
-//import travel.LoginPage as TravelLoginPage;
+import pro.LogIN;
 
 import javax.swing.*;
 import java.awt.*;
@@ -35,26 +35,28 @@ public class Main extends JFrame {
             }
         });
 
-//        inventoryButton.addActionListener(new ActionListener() {
-//            @Override
-//            public void actionPerformed(ActionEvent e) {
-//                new InventoryLoginPage(); // Opens Inventory login page
-//            }
-//        });
-//
+        inventoryButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+            	Login frame = new Login();
+				frame.setVisible(true); // Opens Inventory login page
+            }
+        });
+
         employeeButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 new LoginForm(); // Opens Employee login page
             }
         });
-//
-//        travelButton.addActionListener(new ActionListener() {
-//            @Override
-//            public void actionPerformed(ActionEvent e) {
-//                new TravelLoginPage(); // Opens Travel login page
-//            }
-//        });
+
+        travelButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+            	LogIN frame = new LogIN(); // Opens Travel login page
+            	frame.setVisible(true);
+            }
+        });
 
         // Add buttons to panel
         panel.add(hospitalButton);
