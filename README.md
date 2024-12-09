@@ -1,5 +1,3 @@
-Here’s a README text you can use for your GitHub repository:
-
 ---
 
 # Travel and Tour Management Database
