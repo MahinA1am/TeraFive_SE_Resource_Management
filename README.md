@@ -1,5 +1,7 @@
 # Inventory Management System
 
+# Md.Ali Akbor - 21225103047
+
 ## Description
 
 This project is a database schema and sample dataset for an **Inventory Management System**, created using MySQL/MariaDB. It provides a structure for managing inventory items, categories, and related data, allowing developers to build or extend inventory solutions effectively.
