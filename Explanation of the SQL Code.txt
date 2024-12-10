@@ -1,0 +1,47 @@
+Explanation of the SQL Code
+
+Table Structures and Their Purposes
+
+1. `book_details`
+   - **Purpose**: Stores booking information including user details, package ID, hotel ID, price, and dates.
+   - **Key Columns**:
+     - `User_name`: Name of the user making the booking.
+     - `P_ID` and `H_ID`: References to the package and hotel associated with the booking.
+     - `Total_Price`: Total cost of the booking.
+     - `Arrival_Date` & `Leaving_Date`: Dates for the booking.
+
+2. `hotels`
+   - **Purpose**: Stores information about available hotels.
+   - **Key Columns**:
+     - `H_ID`: Unique identifier for each hotel.
+     - `Location`, `H_Name`, and `H_Price`: Details about the hotel, including pricing.
+     - `Rating`: Hotel's average rating.
+
+3. `packages`
+   - **Purpose**: Stores information about travel packages.
+   - **Key Columns**:
+     - `P_ID`: Unique identifier for each package.
+     - `P_Price`, `P_Name`, and `Description`: Details about the package.
+
+4. `users`
+   - **Purpose**: Stores information about users of the system.
+   - **Key Columns**:
+     - `id`: Unique identifier for each user.
+     - `email`: Unique email for user login.
+     - `password`: Stores user password (should ideally be hashed for security).
+     - `gender`: Captures gender as `Male` or `Female`.
+
+
+Data Relationships
+    Foreign Keys:
+  - `book_details.P_ID` references `packages.P_ID`.
+  - `book_details.H_ID` references `hotels.H_ID`.
+
+These relationships ensure data integrity between bookings, packages, and hotels.
+
+
+
+Indexes
+Indexes are added to optimize query performance:
+- Primary keys (`id`, `P_ID`, `H_ID`).
+- Unique constraint on `users.email`.
