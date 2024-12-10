@@ -1,130 +1,45 @@
----
+# Inventory Management System
 
-# Travel Management System
+## Description
 
-A robust Travel Management System built with Java, designed to simplify travel planning and management. This application allows users to browse travel packages, book trips, manage itineraries, and handle payments seamlessly.
-
----
+This project is a database schema and sample dataset for an **Inventory Management System**, created using MySQL/MariaDB. It provides a structure for managing inventory items, categories, and related data, allowing developers to build or extend inventory solutions effectively.
 
 ## Features
 
-- **User Management:**  
-  - Traveler and admin accounts with secure authentication.  
-  - Profile creation and management.
+- **Database Tables**:
+  - `category`: Stores inventory categories.
+  - Additional tables may include product details, user accounts, and transactions.
+- **Data Included**:
+  - Sample categories such as "Food," "Electronics," and "Fabric."
+- Designed to support applications for inventory tracking and management.
 
-- **Travel Packages:**  
-  - Browse and search for travel destinations and packages.  
-  - Create and update travel itineraries.
+## Prerequisites
 
-- **Bookings:**  
-  - Book flights, hotels, and activities.  
-  - Manage existing bookings with notifications.
-
-- **Payment Processing:**  
-  - Secure payment handling with integrated APIs.
-
-- **Reporting and Analytics:**  
-  - Generate detailed travel and financial reports.
-
----
+- MySQL or MariaDB installed.
+- Access to a tool like phpMyAdmin, MySQL Workbench, or the MySQL CLI for database management.
 
 ## Installation
 
-### Prerequisites
-
-- Java Development Kit (JDK) 11 or later  
-- Apache Maven  
-- MySQL or any other relational database  
-- An IDE like IntelliJ IDEA or Eclipse (optional)
-
-### Steps
-
-1. **Clone the Repository**  
-   ```bash
-   git clone https://github.com/your-username/travel-management-system.git
-   cd travel-management-system
+1. Open your MySQL client or database management tool.
+2. Create a new database named `inventory_management` (or your preferred name):
+   ```sql
+   CREATE DATABASE inventory_management;
    ```
-
-2. **Build the Project**  
+3. Import the SQL file into the database:
    ```bash
-   mvn clean install
+   mysql -u [username] -p inventory_management < Inventory Management System.sql
    ```
+4. Verify the imported tables and data.
 
-3. **Set Up the Database**  
-   - Create a new database in MySQL (or your preferred DBMS).  
-   - Update the `application.properties` file with your database details:
-     ```properties
-     spring.datasource.url=jdbc:mysql://localhost:3306/your_database_name
-     spring.datasource.username=your_username
-     spring.datasource.password=your_password
-     ```
+## Usage
 
-4. **Run the Application**  
-   ```bash
-   mvn spring-boot:run
-   ```
+- Extend the schema to add more functionality such as inventory tracking, user authentication, or reporting.
+- Integrate with front-end or back-end systems to build a complete inventory management application.
 
-5. **Access the Application**  
-   Open a browser and navigate to `http://localhost:8080`.
+## Contributing
+
+Contributions are welcome! Please fork the repository and create a pull request with your changes or enhancements.
 
 ---
 
-## Project Structure
-
-```plaintext
-TravelManagementSystem/
-├── src/
-│   ├── main/
-│   │   ├── java/
-│   │   │   ├── com.example.travelmanagement/
-│   │   │   │   ├── controllers/
-│   │   │   │   ├── models/
-│   │   │   │   ├── repositories/
-│   │   │   │   ├── services/
-│   │   │   │   └── TravelManagementApplication.java
-│   │   ├── resources/
-│   │   │   ├── application.properties
-│   │   │   └── templates/
-│   ├── test/
-│       └── java/
-├── pom.xml
-└── README.md
-```
-
----
-
-## Technologies Used
-
-- **Frontend:** Thymeleaf, JSP, or React (if a separate frontend is used).  
-- **Backend:** Spring Boot Framework  
-- **Database:** MySQL / PostgreSQL  
-- **Build Tool:** Maven  
-- **Security:** Spring Security for authentication and authorization  
-- **API Integration:** REST APIs for external services (e.g., payment gateway)
-
----
-
-## How to Contribute
-
-1. Fork the repository.  
-2. Create a feature branch:  
-   ```bash
-   git checkout -b feature-name
-   ```
-3. Commit your changes:  
-   ```bash
-   git commit -m "Add feature-name"
-   ```
-4. Push to the branch:  
-   ```bash
-   git push origin feature-name
-   ```
-5. Open a pull request.
-
----
-
-## License
-
-This project is licensed under the MIT License. See the `LICENSE` file for more details.
-
----
+Let me know if you'd like additional sections or edits!
