@@ -57,6 +57,6 @@ This project is open-source and available under the [MIT License](LICENSE).
 ## Contact
 For queries or contributions, please contact:
 - **Developer**: Md. Rifatul Islam
-- **Email**: [rifatul.ism@gmail.com] (Replace with your actual email)
+- **Email**: rifatul.ism@gmail.com
 
 ---
